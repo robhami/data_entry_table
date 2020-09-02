@@ -1,0 +1,26 @@
+ th, td, table, .num{
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+tr {
+	height:25px;
+}
+
+td {
+	text-align: center;
+}
+
+.numEnt {
+	width:50px;
+}
+
+.select {
+	width:75px;
+	padding:0px;
+}
+
+.num {
+	width:50px;
+	min-width:25px;
+}
