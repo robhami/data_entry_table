@@ -7,56 +7,63 @@
 </head>
 <body>
 <div class="container">
-	<table class="table table-bordered" id="BHAentry">
-	  <thead>
-	 	
-	    <tr>
-	    	<th scope="col">#</th>
-		    <th scope="col" class="select">Tool Type</th>
-			<th scope="col">Tool</th>
-		    <th scope="col">OD</th>
-		    <th scope="col">ID</th>
-		    <th scope="col">Weight</th>
-		    <th scope="col">Length</th>
-		    <th scope="col">Delete</th>
-	    </tr>
-	  </thead>
+	<div class="table">
+		<table class="table table-bordered table-condensed" id="BHAentry" 
+		
+		cellpadding="0" cellspacing="0"
 
-	  <tbody>
-	  
-	  <tr id="dataRow">
-	    <td class="num">1</td>
-	    <td class="select">
-	    	<select class="select">
-	    			<option value="DC">DC</option>
-	    			<option value="HWDP">HWDP</option>
-	    			<option value="DP">DP</option>
-	    			<option value="Stab">DC</option>
-	    			<option value="M_LWD">DC</option>
-	    			<option value="Motor">DC</option>
-	    			<option value="Sub_XO">DC</option>
-	    	</select>
-	    </td>
-	    <td class="select" contenteditable='true'>
-			<select>
-	    			<option value="pend">Select Tool Type</option>
-	    	</select>
-		</td>
-	    <td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="OD"/></td>
-		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
-		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
-		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
-		<td>
-	   		<button type="button" onClick="myDeleteFunction(this)" id="delButt">X</button>
-	   </td>
-	  </tr>
-	 
-	 </tbody>
+		>
+		  <thead>
+		 	
+		    <tr>
+		    	<th scope="col">#</th>
+			    <th scope="col" class="select">Type</th>
+				<th scope="col">Tool</th>
+			    <th scope="col">OD</th>
+			    <th scope="col">ID</th>
+			    <th scope="col">Weight</th>
+			    <th scope="col">Length</th>
+			    <th scope="col">Delete</th>
+		    </tr>
+		  </thead>
 
-	</table>
-	<button type="button" onClick="myCreateFunction()">Add tool row</button>
-	<button type="button" class="btn btn-success btn-lg float-right" onClick="mySaveFunction()" id="savButt">Save</button>
-	<button type="button" onClick="myCalcFunction()" id="calcButt">Calculate</button>
+		  <tbody>
+		  
+		  <tr id="dataRow">
+		    <td class="num">1</td>
+		    <td class="select">
+		    	<select class="select">
+		    			<option value="DC">DC</option>
+		    			<option value="HWDP">HWDP</option>
+		    			<option value="DP">DP</option>
+		    			<option value="Stab">DC</option>
+		    			<option value="M_LWD">DC</option>
+		    			<option value="Motor">DC</option>
+		    			<option value="Sub_XO">DC</option>
+		    	</select>
+		    </td>
+		    <td class="select" contenteditable='true'>
+				<select>
+		    			<option value="pend">Select Tool Type</option>
+		    	</select>
+			</td>
+		    
+			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td>
+		   		<button type="button" onClick="myDeleteFunction(this)" id="delButt">X</button>
+		   </td>
+		  </tr>
+		 
+		 </tbody>
+		
+		</table>
+		<button type="button" class="btn btn-secondary btn" onClick="myCreateFunction(this)">Add tool row</button>
+		<button type="button" class="btn btn-success btn float-right" onClick="mySaveFunction()" id="savButt">Save</button>
+		<button type="button" class="btn btn-primary btn float-right" onClick="myCalcFunction()" id="calcButt">Calculate</button>
+	</div>
 </div>
 </body>
 <script type="text/javascript" src="script.js"></script>

@@ -1,34 +1,41 @@
- th, td, table, .num{
-  border: 1px solid black;
-  border-collapse: collapse;
+
+.container {
+	width:50%;
 }
 
 
-
-tr {
-	height:25px;
+input {
+	display: block !important; 
+	padding: 0 !important; 
+	margin: 0 !important; 
+	width: 100% !important; 
+	height: 100% !important;
+	border-radius: 0 !important; 
+	line-height: 1 !important;
+	min-height: 25px;
 }
+
 
 td {
-	text-align: center;
-	width:50px;
+	margin: 0 !important; 
+	padding: 0 !important;
+	min-height: 25px;
 }
 
-.numEnt {
-	width:50px;
+#delButt {
+	display: block !important; 
+	padding: 0 !important; 
+	margin: 0 !important; 
+	width: 100% !important; 
+	border-radius: 0 !important; 
+	line-height: 1 !important;
+	min-height: 25px;
 }
 
-.select {
-	width:75px;
-	padding:0px;
+.table {
+	min-width: 570px;
 }
 
-.num {
-	width:50px;
-	min-width:25px;
-}
-
-.calcButt, .savButt {
-	position: absolute; 
-	right: 150px;
+.container {
+	margin-left: 10px;
 }
