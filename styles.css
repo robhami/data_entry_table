@@ -3,12 +3,15 @@
   border-collapse: collapse;
 }
 
+
+
 tr {
 	height:25px;
 }
 
 td {
 	text-align: center;
+	width:50px;
 }
 
 .numEnt {
@@ -23,4 +26,9 @@ td {
 .num {
 	width:50px;
 	min-width:25px;
+}
+
+.calcButt, .savButt {
+	position: absolute; 
+	right: 150px;
 }

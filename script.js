@@ -1,28 +1,19 @@
 
 let rowCount=1;
 
+function myCreateFunction() {	
+	let bhaTable=document.getElementById('BHAentry');
+	let toolRow=document.getElementById('dataRow');
+	let newRow =toolRow.cloneNode(true);
 
-
-
-function myCreateFunction() {
-	
-	let T=document.getElementById('BHAentry');
-	let R=document.getElementById('dataRow');
-	let C =R.cloneNode(true);
-
-	T.appendChild(C);
+	bhaTable.appendChild(newRow);
 	rowCount++
-	dataRow[rowCount-1].children[0].textContent=rowCount;
-		console.log(dataRow[rowCount-1].children[0])
+	let newNumCol=dataRow[rowCount-1].children[0]
+	newNumCol.textContent=rowCount;
+	console.log(newNumCol);
+}
 
-	// let n=document.getElementById('dataRow'.children[0]);
-	// console.log(n);
-
-
-  // var table = document.getElementById("BHAentry");
-  // var row = table.insertRow(-1);
-  // var cell1 = row.insertCell(0);
-  // var cell2 = row.insertCell(1);
-  // cell1.innerHTML = "NEW CELL1";
-  // cell2.innerHTML = "NEW CELL2";
+function myDeleteFunction(row) {	
+	console.log(row.parentElement.parentElement);
+	row.parentElement.parentElement.remove();
 }

@@ -1,52 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<title>Data Entry Table</title>
 </head>
 <body>
+<div class="container">
+	<table class="table table-bordered" id="BHAentry">
+	  <thead>
+	 	
+	    <tr>
+	    	<th scope="col">#</th>
+		    <th scope="col" class="select">Tool Type</th>
+			<th scope="col">Tool</th>
+		    <th scope="col">OD</th>
+		    <th scope="col">ID</th>
+		    <th scope="col">Weight</th>
+		    <th scope="col">Length</th>
+		    <th scope="col">Delete</th>
+	    </tr>
+	  </thead>
 
+	  <tbody>
+	  
+	  <tr id="dataRow">
+	    <td class="num">1</td>
+	    <td class="select">
+	    	<select class="select">
+	    			<option value="DC">DC</option>
+	    			<option value="HWDP">HWDP</option>
+	    			<option value="DP">DP</option>
+	    			<option value="Stab">DC</option>
+	    			<option value="M_LWD">DC</option>
+	    			<option value="Motor">DC</option>
+	    			<option value="Sub_XO">DC</option>
+	    	</select>
+	    </td>
+	    <td class="select" contenteditable='true'>
+			<select>
+	    			<option value="pend">Select Tool Type</option>
+	    	</select>
+		</td>
+	    <td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="OD"/></td>
+		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
+		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
+		<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
+		<td>
+	   		<button type="button" onClick="myDeleteFunction(this)" id="delButt">X</button>
+	   </td>
+	  </tr>
+	 
+	 </tbody>
 
-<table style="width:50%" id="BHAentry">
-  <tr>
-    <th>#</th>
-    <th class="select">Tool Type</th>
-	<th>Tool</th>
-    <th>OD</th>
-    <th>ID</th>
-    <th>Weight</th>
-   
-  </tr>
-
-
-  <tr id="dataRow">
-    <td class="num">1</td>
-    <td class="select">
-    	<select class="select">
-    			<option value="DC">DC</option>
-    			<option value="HWDP">HWDP</option>
-    			<option value="DP">DP</option>
-    			<option value="Stab">DC</option>
-    			<option value="M_LWD">DC</option>
-    			<option value="Motor">DC</option>
-    			<option value="Sub_XO">DC</option>
-    	</select>
-    </td>
-    <td class="select" contenteditable='true'>
-		<select>
-    			<option value="pend">Select Tool Type</option>
-	</td>
-    <td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="OD"/></td>
-	<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
-	<td class="numEnt" contenteditable='true'><input class="numEnt" type="number" name="ID"/></td>
-   
-  </tr>
-
- 
-
-</table>
-<button type="button" onClick="myCreateFunction()">Add tool row</button>
-
+	</table>
+	<button type="button" onClick="myCreateFunction()">Add tool row</button>
+	<button type="button" class="btn btn-success btn-lg float-right" onClick="mySaveFunction()" id="savButt">Save</button>
+	<button type="button" onClick="myCalcFunction()" id="calcButt">Calculate</button>
+</div>
 </body>
 <script type="text/javascript" src="script.js"></script>
 </html>
