@@ -15,7 +15,7 @@ input {
 	line-height: 1 !important;
 	min-height: 25px;
 	/*border-color: blue !important;*/
-	background-color: #f7e96f !important;
+	/*background-color: #f7e96f !important;*/
 }
 
 
@@ -76,11 +76,14 @@ button {
 }
 
 select {
-	background-color: #f7e96f !important;
+	/*background-color: #f7e96f !important;*/
 	min-height: 25px !important;
+	border: 0px;
+	outline:0px;
+
 }
 
 tr {
-	background-color: #f7e96f !important;
+	/*background-color: #f7e96f !important;*/
 
 }
