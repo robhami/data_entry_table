@@ -27,31 +27,31 @@
 		    </tr>
 		  </thead>
 
-		  <tbody>
+		  <tbody id="tabBody">
 		  
 		  <tr id="dataRow">
-		    <td class="num">1</td>
-		    <td class="select">
+		    <td class="num" id="num">1</td>
+		    <td class="select" id="type">
 		    	<select class="select">
-		    			<option value="DC">DC</option>
-		    			<option value="HWDP">HWDP</option>
-		    			<option value="DP">DP</option>
-		    			<option value="Stab">DC</option>
-		    			<option value="M_LWD">DC</option>
-		    			<option value="Motor">DC</option>
-		    			<option value="Sub_XO">DC</option>
+		    			<option value="DC" onclick ="DD(this.textContent)">DC</option>
+		    			<option value="HWDP" onclick="DD(this.id)">HWDP</option>
+		    			<option value="DP" onclick ="DD(this.textContent)">DP</option>
+		    			<option value="Stab" onclick ="DD(this.textContent)">DC</option>
+		    			<option value="M_LWD" onclick ="DD(this.textContent)">DC</option>
+		    			<option value="Motor" onclick ="DD(this.textContent)">DC</option>
+		    			<option value="Sub_XO" onclick ="DD(this.textContent)">DC</option>
 		    	</select>
 		    </td>
-		    <td class="select2" contenteditable='true'>
+		    <td class="select" id="tool">
 				<select>
 		    			<option value="pend">Select Tool Type</option>
 		    	</select>
 			</td>
 		    
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td class="numEnt" ><input class="form-control" type="number" id="ID" value="1"/></td>
+			<td class="numEnt" ><input class="form-control" type="number" id="OD" value="1"/></td>
+			<td class="numEnt" ><input class="form-control" type="number" id="weight" value="1"/></td>
+			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" id="length" value="1"/></td>
 			<td>
 				
 		   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
