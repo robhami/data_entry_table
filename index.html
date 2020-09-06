@@ -30,26 +30,30 @@
 		  <tbody id="tabBody">
 		  
 		  <tr id="dataRow">
-		    <td class="num" id="num">1</td>
-		    <td class="select" id="type">
-		    	<select class="select">
-		    			<option value="DC" onclick ="DD(this.textContent)">DC</option>
-		    			<option value="HWDP" onclick="DD(this.id)">HWDP</option>
-		    			<option value="DP" onclick ="DD(this.textContent)">DP</option>
-		    			<option value="Stab" onclick ="DD(this.textContent)">DC</option>
-		    			<option value="M_LWD" onclick ="DD(this.textContent)">DC</option>
-		    			<option value="Motor" onclick ="DD(this.textContent)">DC</option>
-		    			<option value="Sub_XO" onclick ="DD(this.textContent)">DC</option>
+		    <td class="num" id="num" data-value=1>1</td>
+		    <td class="select" id="typeTd" data-value="DC">
+		    	<select id="typeSelect" onclick="DD(this.selectedIndex)">
+		    			<option value="DC">DC</option>
+		    			<option value="HWDP">HWDP</option>
+		    			<option value="DP">DP</option>
+		    			<option value="Stab">DC</option>
+		    			<option value="M_LWD">DC</option>
+		    			<option value="Motor">DC</option>
+		    			<option value="Sub_XO">DC</option>
 		    	</select>
 		    </td>
-		    <td class="select" id="tool">
-				<select>
-		    			<option value="pend">Select Tool Type</option>
+		    <td class="select" id="tool" data-value="tool">
+				<select id="toolDD" value="tool">
+		    			<option value="pend">Select Tool</option>
 		    	</select>
 			</td>
 		    
-			<td class="numEnt" ><input class="form-control" type="number" id="ID" value="1"/></td>
-			<td class="numEnt" ><input class="form-control" type="number" id="OD" value="1"/></td>
+			<td class="numEnt" data-value="0">
+				<input class="form-control" type="number" id="OD" value="1" oninput="input(this.value,this.id)"/>
+			</td>
+			<td class="numEnt" >
+				<input class="form-control" type="number" id="ID" value="0"/>
+			</td>
 			<td class="numEnt" ><input class="form-control" type="number" id="weight" value="1"/></td>
 			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" id="length" value="1"/></td>
 			<td>
