@@ -1,7 +1,7 @@
 
 let rowCount=1;
+let saveObject={};
 let saveArray=[];
-
 
 
 function myCreateFunction() {	
@@ -47,19 +47,40 @@ function myDeleteFunction(row) {
 	}
 }
 
-function mySaveFunction () {
+function mySaveFunction (prop) {
+	saveArray=[];
+
 	for(j=0;j<rowCount;j++) {
+
 		let saveRow=(tabBody.children[j])
 		console.log(saveRow);
+		
 		for(k=0;k<7;k++) {
-			// console.log(saveRow.children[k])
-			console.log(saveRow.children[k].dataset.value)
-			// saveArray.push(saveRow.children[k].value);
+			let prop=headers.children[k].textContent;
+			let val=saveRow.children[k].dataset.value;
+			console.log("prop",prop);
+			console.log("val",val);
+			// Object.defineProperty(saveObject,headers.children[k].textContent,{value: saveRow.children[k].dataset.value})
+			Object.defineProperty(saveObject,prop,{value: val})
 		}
+		saveArray.push(saveObject);
+		console.log(saveArray);
+		saveObject={};
+
+	}
+	// console.log(saveObject);
+	
+	
+}
+
+function createObjProps() {
+	
+	for(k=0;k<7;k++) {
+		console.log(headers.children[k].textContent);
 	}
 
-// console.log(saveArray);
 }
+
 
 function DD (selectIndex) {
 	//can also pass id to make it usable by other DD
