@@ -53,33 +53,27 @@ function mySaveFunction (prop) {
 	for(j=0;j<rowCount;j++) {
 
 		let saveRow=(tabBody.children[j])
-		console.log(saveRow);
+		// console.log(saveRow);
 		
 		for(k=0;k<7;k++) {
 			let prop=headers.children[k].textContent;
 			let val=saveRow.children[k].dataset.value;
-			console.log("prop",prop);
-			console.log("val",val);
-			// Object.defineProperty(saveObject,headers.children[k].textContent,{value: saveRow.children[k].dataset.value})
-			Object.defineProperty(saveObject,prop,{value: val})
+			// console.log("prop",prop);
+			// console.log("val",val);
+			
+			Object.defineProperty(saveObject,prop,{value: val, enumerable: true})
 		}
-		saveArray.push(saveObject);
-		console.log(saveArray);
+		console.log(saveObject);
+		let saveJSON = JSON.stringify(saveObject);
+		console.log(saveJSON);
+		
+		saveArray.push(saveJSON);
 		saveObject={};
-
 	}
-	// console.log(saveObject);
-	
-	
+	console.log(saveArray);	
 }
 
-function createObjProps() {
-	
-	for(k=0;k<7;k++) {
-		console.log(headers.children[k].textContent);
-	}
 
-}
 
 
 function DD (selectIndex) {
