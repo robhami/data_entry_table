@@ -3,7 +3,7 @@
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="styles.css">
-	<title>Data Entry Table</title>
+	<title>xData Entry Table</title>
 </head>
 <body>
 <div class="container">
@@ -15,7 +15,7 @@
 		>
 		  <thead>
 		 	
-		    <tr>
+		    <tr id="headers">
 		    	<th scope="col">#</th>
 			    <th scope="col" class="select">Type</th>
 				<th scope="col">Tool</th>
@@ -27,12 +27,12 @@
 		    </tr>
 		  </thead>
 
-		  <tbody>
+		  <tbody id="tabBody">
 		  
 		  <tr id="dataRow">
-		    <td class="num">1</td>
-		    <td class="select">
-		    	<select class="select">
+		    <td class="num" id="num" data-value=1>1</td>
+		    <td class="select" id="typeTd" data-value="DC">
+		    	<select id="typeSelect" onclick="DD(this.selectedIndex)">
 		    			<option value="DC">DC</option>
 		    			<option value="HWDP">HWDP</option>
 		    			<option value="DP">DP</option>
@@ -42,16 +42,22 @@
 		    			<option value="Sub_XO">DC</option>
 		    	</select>
 		    </td>
-		    <td class="select2" contenteditable='true'>
-				<select>
-		    			<option value="pend">Select Tool Type</option>
+		    <td class="select" id="tool" data-value="tool">
+				<select id="toolDD" value="tool">
+		    			<option value="pend">Select Tool</option>
 		    	</select>
 			</td>
 		    
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
-			<td class="numEnt" contenteditable='true'><input class="form-control" type="number" name="ID"/></td>
+			<td class="numEnt" data-value="0">
+				<input class="form-control" type="number" id="OD" value="0" oninput="input(this.value,this.id)"/>
+			</td>
+			<td class="numEnt" data-value="0">
+				<input class="form-control" type="number" id="ID" value="0" oninput="input(this.value,this.id)"/>
+			</td>
+			<td class="numEnt" data-value="0">
+				<input class="form-control" type="number" id="weight" value="0" oninput="input(this.value,this.id)"/></td>
+			<td class="numEnt" data-value="0">
+				<input class="form-control" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
 			<td>
 				
 		   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
