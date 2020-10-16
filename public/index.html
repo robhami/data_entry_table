@@ -17,7 +17,7 @@
 			  <thead>
 			 	
 			    <tr id="headers">
-			    	<th scope="col">#</th>
+			    	<th scope="col">No</th>
 				    <th scope="col" class="select">Type</th>
 					<th scope="col">Tool</th>
 				    <th scope="col">OD</th>
@@ -30,46 +30,47 @@
 
 			  <tbody id="tabBody">
 			  
-			  <tr id="dataRow">
-			    <td class="num" id="num" data-value=1>1</td>
-			    <td class="select" id="typeTd" data-value="DC">
-			    	<select id="typeSelect" onclick="DD(this.selectedIndex)">
-			    			<option value="DC">DC</option>
-			    			<option value="HWDP">HWDP</option>
-			    			<option value="DP">DP</option>
-			    			<option value="Stab">DC</option>
-			    			<option value="M_LWD">DC</option>
-			    			<option value="Motor">DC</option>
-			    			<option value="Sub_XO">DC</option>
-			    	</select>
-			    </td>
-			    <td class="select" id="tool" data-value="tool">
-					<select id="toolDD" value="tool">
-			    			<option value="pend">Select Tool</option>
-			    	</select>
-				</td>
-			    
-				<td class="numEnt" data-value="0">
-					<input class="form-control" type="number" id="OD" value="0" oninput="input(this.value,this.id)"/>
-				</td>
-				<td class="numEnt" data-value="0">
-					<input class="form-control" type="number" id="ID" value="0" oninput="input(this.value,this.id)"/>
-				</td>
-				<td class="numEnt" data-value="0">
-					<input class="form-control" type="number" id="weight" value="0" oninput="input(this.value,this.id)"/></td>
-				<td class="numEnt" data-value="0">
-					<input class="form-control" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
-				<td>
-					
-			   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
-			   		
-			   	</td>
-			  </tr>
+				  <tr id="dataRow">
+				    <td class="num" id="num" value=1>1</td>
+				    <td class="select" id="typeTd" value="DC">
+				    	<select id="typeSelect" onclick="DD(this.selectedIndex, this.id)" >
+				    			<option value="DC">DC</option>
+				    			<option value="HWDP">HWDP</option>
+				    			<option value="DP">DP</option>
+				    			<option value="Stab">Stab</option>
+				    			<option value="M_LWD">M_LWD</option>
+				    			<option value="Motor">Motor</option>
+				    			<option value="Sub_XO">Sub_XO</option>
+				    	</select>
+				    </td>
+				    <td class="select" id="tool" value="tool">
+						<select id="toolDD" value="tool">
+				    			<option value="pend">Select Tool</option>
+				    	</select>
+					</td>
+				    
+					<td class="numEnt" value=0>
+						<input class="form-control" type="number" id="OD" value="0" oninput="input(this.value,this.id)"/>
+					</td>
+					<td class="numEnt" value="0">
+						<input class="form-control" type="number" id="ID" value="0" oninput="input(this.value,this.id)"/>
+					</td>
+					<td class="numEnt" value="0">
+						<input class="form-control" type="number" id="weight" value="0" oninput="input(this.value,this.id)"/></td>
+					<td class="numEnt" value="0">
+						<input class="form-control" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
+					<td>
+						
+				   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
+				   		
+				   	</td>
+				  </tr>
 			 
 			 </tbody>
 			
 			</table>
-			<button type="button" class="btn btn-secondary btn" onClick="myCreateFunction(this)">Add tool row</button>
+
+			<button type="button" class="btn btn-secondary btn" onClick="addRow(this)">Add tool row</button>
 			<button type="submit" class="btn btn-success btn float-right" onClick="mySaveFunction()" id="savButt">Save</button>
 			<button type="button" class="btn btn-primary btn float-right" onClick="myCalcFunction()" id="calcButt">Calculate</button>
 		</div>
