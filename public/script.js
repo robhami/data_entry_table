@@ -6,19 +6,17 @@ let saveObject={};
 let saveArray=[];
 let saveJSON={1:1};
 let myJSON="";
-fetch('http://localhost:3000/')
-.then(response => response.json())
-.then(data => console.log(data))
+// fetch('http://localhost:3000/')
+// .then(response => response.json())
+// .then(data => console.log(data))
 
 function DD (selectIndex, newId) {
 // this is the row where the DD change made	
 	let selectRow=(document.getElementById(newId));
 	console.log(selectRow);
 //this is the DD value selected
-	let selectOption=selectRow.children[selectIndex];
-	
+	let selectOption=selectRow.children[selectIndex];	
 	console.log(selectOption);
-
 	console.log(selectRow.value);
 	console.log(selectRow.parentElement);
 
@@ -36,13 +34,6 @@ function input (valuex,idx) {
 	//sets parent of entered value to the value entered
 	cell.setAttribute("value", valuex)
 	console.log(cell);
-	// document.getElementById(idx).parentElement=valuex;
-	// let parentVal=document.getElementById(idx).parentElement.value;
-	// // parentVal.value=valuex;
-	// console.log("parentVal: ",parentVal);
-	// console.log(parentVal.value);
-
-
 }
 
 function addRow() {	
@@ -99,43 +90,48 @@ function mySaveFunction () {
 	for(j=0;j<rowCount;j++) {
 	//set save row for each step of loop from 0 to rowCount
 		let saveRow=(tabBody.children[j])
-		console.log(saveRow);
-		// console.log(saveRow.children[0]);
-		// saveRow.children[0].value=j+1;
-		// console.log(saveRow.children[1]);
-		// console.log(saveRow.children[1].value);
+		// console.log(saveRow);
+		
 		for(k=0;k<7;k++) {
 			//get property from row headers
 			let prop=headers.children[k].textContent;
-			console.log("saveRow.children[k]: ",saveRow.children[k])
+			// console.log("saveRow.children[k]: ",saveRow.children[k])
 			let val=saveRow.children[k].getAttribute("value");
-			console.log("prop",prop);
-			console.log("val",val);
+			// console.log("prop",prop);
+			// console.log("val",val);
 			
 			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});
 			
 		}
-		console.log("save Object: ", saveObject)
-		let myJSON=JSON.stringify(saveObject);
+		// console.log("save Object: ", saveObject)
+		myJSON=JSON.stringify(saveObject);
 		
 		// JSON.parse(saveObject);
-		console.log("myJSON: ", myJSON)
+		// console.log("myJSON: ", myJSON)
 
 		saveArray.push(saveObject);
 
-		// saveObject={};
+		saveObject={};
 
 	}
-	// saveArray=JSON.parse(saveArray);
+	
 	console.log(saveArray);
 
-	fetch ('http://localhost:3000/', {
-		method: 'POST',
+	fetcher(saveArray);
+}
+
+
+function fetcher (saveArray) {
+	fetch ('http://localhost:3000/'
+		, {
+		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: 
-			myJSON
+			JSON.stringify(
+				saveArray
+			)
 		})
 		.then(response => response.json())
 		.then(json => {
@@ -144,8 +140,9 @@ function mySaveFunction () {
 		.catch((error) => {
 	  		console.error('Error:', error);
 		});
+}
 
-}		
+	
 
 
 

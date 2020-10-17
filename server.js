@@ -51,17 +51,22 @@ app.get('/' ,(req, res)=>{
 
 })
 
-app.post('/',(req,res)=>{
+app.put('/',(req,res)=>{
 	console.log(req.body);
+	let newRows = req.body;
 	database.users.push({
-		Type: "DC", 
-		Tool: "tool", 
-		OD: "0", 
-		ID: "0", 
-		No: "1"
+		// Type: "DC", 
+		// Tool: "xtool", 
+		// OD: "0", 
+		// ID: "0", 
+		// No: "1"
+		newRows
+
 
 	})
 	res.json(database.users[database.users.length-1]);
+	// res.json(body);
+	// res.('hello');
 })
 
 
