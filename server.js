@@ -18,7 +18,20 @@ app.use(bodyParser.json());
 //     res.send(datax.saveJSON); 
 // });
 
+const knex = require ('knex') 
 
+
+const db  = knex({
+  	client: 'pg',
+  	connection: {
+    host : '127.0.0.1',
+    user : 'postgres',
+    password : 'Ham&1974',
+    database : 'bhadata'
+  }
+});
+
+console.log(db.select('*').from('users'));
 
 const database ={
 	users: [
@@ -53,21 +66,44 @@ app.get('/' ,(req, res)=>{
 
 app.put('/',(req,res)=>{
 	console.log(req.body);
-	let newRows = req.body;
-	database.users.push({
+	const newRows = req.body;
+	
+	console.log(newRows[0].No);
+	database.users.push(
 		// Type: "DC", 
 		// Tool: "xtool", 
 		// OD: "0", 
 		// ID: "0", 
 		// No: "1"
+	// db('bhainput')
+	// .returning('*')
+	// .insert({
 		newRows
+		// No: req.body(No), 
+		// Type: Type, 
+		// Tool: Tool, 
+		// OD: OD, 
+		// ID: ID, 
+		// Weight: Weight, 
+		// Length: Length
+		)
 
+		
+	// .then(response => {
+	// 	res.json(response);
+	// })
 
-	})
+	
 	res.json(database.users[database.users.length-1]);
 	// res.json(body);
 	// res.('hello');
 })
+
+
+
+
+
+
 
 
 app.listen(3000, ()=>{
