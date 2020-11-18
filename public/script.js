@@ -44,10 +44,7 @@ function addRow() {
 	newRow.id=newRow.id+rowCount;
 	// newRow.setAttribute("value",rowCount);
 	console.log(newRow);
-
 	let newRowCols = newRow.children
-
-
 
 // loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
@@ -85,6 +82,7 @@ function myDeleteFunction(row) {
 }
 
 function mySaveFunction () {
+	deleteRows();
 	saveArray=[];
 
 	for(j=0;j<rowCount;j++) {
@@ -115,34 +113,49 @@ function mySaveFunction () {
 
 	}
 	
-	console.log(saveArray);
+	console.log("SaveArray",saveArray);
 
 	fetcher(saveArray);
 }
 
 
 function fetcher (saveArray) {
-	fetch ('http://localhost:3000/'
-		, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: 
-			JSON.stringify(
-				saveArray
-			)
-		})
-		.then(response => response.json())
-		.then(json => {
-	  		console.log('Success:', json);
-		})
-		.catch((error) => {
-	  		console.error('Error:', error);
-		});
+	console.log("rowCount: ",rowCount);
+
+//do the loop here
+	for(i=0;i<rowCount;i++){
+		fetch ('http://localhost:3000/'
+			, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: 
+				JSON.stringify(
+					saveArray[i]
+				)
+			})
+			.then(response => response.json())
+			.then(json => {
+		  		console.log('Success:', json);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+	}
+
+
 }
 
 	
+function deleteRows () {
+	fetch ('http://localhost:3000/'
+		, {
+		method: 'DELETE',
+	})
+	.then(response => console.log(response));
 
+	// mySaveFunction();
+}
 
 

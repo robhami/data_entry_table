@@ -31,76 +31,58 @@ const db  = knex({
   }
 });
 
-console.log(db.select('*').from('users'));
+console.log(db.select('*').from('bhainput'));
 
-const database ={
-	users: [
-		{
-		Type: "DC", 
-		Tool: "tool", 
-		OD: "0", 
-		ID: "0", 
-		No: "1",
-		},
-		{id: '124', 
-		name:'Sally', 
-		email:'sally@gmail.com', 
-		password:'bannanas', 
-		entries:0, 
-		joined: new Date()
-		}
-	],
-	login: [
-		{
-			id:'987',
-			has:'',
-			email: 'john@gmail.com'
-		}
-	]
-}
+
 
 app.get('/' ,(req, res)=>{
-	res.send(database.users);
+	res.send(req.body);
+
 
 })
 
 app.put('/',(req,res)=>{
-	console.log(req.body);
-	const newRows = req.body;
+	console.log("new rows",req.body);
+	// console.log("rowCount", rowCount);
+	const newRows=req.body;
 	
-	console.log(newRows[0].No);
-	database.users.push(
-		// Type: "DC", 
-		// Tool: "xtool", 
-		// OD: "0", 
-		// ID: "0", 
-		// No: "1"
-	// db('bhainput')
-	// .returning('*')
-	// .insert({
-		newRows
-		// No: req.body(No), 
-		// Type: Type, 
-		// Tool: Tool, 
-		// OD: OD, 
-		// ID: ID, 
-		// Weight: Weight, 
-		// Length: Length
-		)
+	
 
+	 db('bhainput')
+	 	
+		.returning('*')
+		.insert({
+			No: newRows.No,	
+			Type: newRows.Type,
+			Tool: newRows.Tool,
+			OD: newRows.OD,
+			ID: newRows.ID,
+			Weight: newRows.Weight,
+			Length: newRows.Length
+
+
+		})
 		
-	// .then(response => {
-	// 	res.json(response);
-	// })
+	.then(response => {
+		res.json(response);
+	})
 
 	
-	res.json(database.users[database.users.length-1]);
+	// res.json(database.users[database.users.length-1]);
 	// res.json(body);
 	// res.('hello');
 })
 
 
+app.delete('/',(req,res)=>{
+console.log("serv delete");
+	db('bhainput')	 	
+		 .del()
+		.then(response => {
+			res.json(response)
+		})
 
+	})
 
 
 
