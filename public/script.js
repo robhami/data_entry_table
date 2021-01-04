@@ -18,9 +18,9 @@ function DD (selectIndex, newId) {
 	let selectOption=selectRow.children[selectIndex];	
 	console.log(selectOption);
 	console.log(selectRow.value);
+	
+	selectRow.parentElement.value=selectRow.value;
 	console.log(selectRow.parentElement);
-
-
 }
 
 
