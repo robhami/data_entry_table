@@ -36,16 +36,23 @@ console.log(db.select('*').from('bhainput'));
 
 
 app.get('/' ,(req, res)=>{
-	res.send(req.body);
+	
+	db.select('*').from('bhainput').then(function(data) {
 
+		res.send(data);
+		// let saveData=res.send(data);
+	});
+	
+	// res.send("hello");
+	console.log("hello", req.body);
 
-})
+});
 
 app.put('/',(req,res)=>{
-	console.log("new rows",req.body);
+	
 	// console.log("rowCount", rowCount);
 	const newRows=req.body;
-	
+	console.log("new rows put",req.body);
 	
 
 	 db('bhainput')

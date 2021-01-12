@@ -6,12 +6,15 @@ let saveObject={};
 let saveArray=[];
 let saveJSON={1:1};
 let myJSON="";
+let loadData={};
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
 // .then(data => console.log(data))
 
 function DD (selectIndex, newId) {
 // this is the row where the DD change made	
+console.log("newId: ", newId);
+console.log("selectIndex: ", selectIndex);
 	let selectRow=(document.getElementById(newId));
 	console.log(selectRow);
 //this is the DD value selected
@@ -19,7 +22,7 @@ function DD (selectIndex, newId) {
 	console.log(selectOption);
 	console.log(selectRow.value);
 	
-	selectRow.parentElement.value=selectRow.value;
+	selectRow.parentElement.setAttribute('value',selectRow.value);
 	console.log(selectRow.parentElement);
 }
 
@@ -50,10 +53,10 @@ function addRow() {
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
 		console.log(newRowCols[i].id);
-		console.log(newRow.children[i].children[0])
+		// console.log(newRow.children[i].children[0])
 	}
 // have to do child of child for cells with input boxes
-	for(i=1;i<7;i++){
+	for(i=1;i<8;i++){
 		newRow.children[i].children[0].id=(newRow.children[i].children[0].id+rowCount)
 	// console.log(newRow.children[0].id+rowCount);
 		console.log(newRow.children[i].children[0].id);
@@ -64,18 +67,19 @@ function addRow() {
 
 	
 // change row # text and value based on increased row count
-	console.log(newRow.children[0]);
+	// console.log(newRow.children[0]);
 	newRow.children[0].textContent=rowCount;
 	newRow.children[0].setAttribute("value",rowCount);
-	console.log(newRow.children[0].dataset.value);
+	// console.log(newRow.children[0].dataset.value);
 }
 
-function myDeleteFunction(row) {	
+function myDeleteFunction(rowDelButt) {	
+	console.log("row: ",rowDelButt);
 	if(rowCount<2){
 		alert("Cannot delete final row");
 	} else if (rowCount>1) {
-		console.log(row.parentElement.parentElement);
-		row.parentElement.parentElement.remove();
+		console.log(rowDelButt.parentElement.parentElement);
+		rowDelButt.parentElement.parentElement.remove();
 		rowCount--;
 		console.log(rowCount);
 	}
@@ -146,6 +150,67 @@ function fetcher (saveArray) {
 
 
 }
+
+
+function myLoadFunction () {
+	
+	fetch ('http://localhost:3000/')
+			.then(response => response.json())
+			.then(json => {
+		  		console.log('Success GET:', json);
+		  		// loadData=json;
+		  		// console.log("loadData:",loadData);
+		  		returnData(json);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+	
+
+}
+
+
+function returnData (json) {
+	console.log("rowCount: ", rowCount);
+	for(l=0;l<rowCount;l++){
+		let rowDelButt=tabBody.children[l].children[7].children[0];
+		console.log("rowDelButt: ", rowDelButt);
+		myDeleteFunction(rowDelButt)
+	}
+
+
+
+	loadData=json;
+	console.log("loadData: ",loadData);	
+	let loadRows =	loadData.length;
+	console.log("loadData length: ",loadRows);
+	
+	
+	for(j=1;j<loadRows;j++) {
+		addRow();
+		
+	}
+
+
+	for(k=0;k<loadRows;k++) {
+		
+		console.log("newId: ",tabBody.children[k].children[1].children[0]);
+		console.log("selectedIndex: ",loadData[k].Type)
+
+		
+	}
+
+
+
+
+
+
+
+// onclick="DD(this.selectedIndex, this.id)"
+}
+
+
+	
 
 	
 function deleteRows () {
