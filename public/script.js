@@ -7,22 +7,26 @@ let saveArray=[];
 let saveJSON={1:1};
 let myJSON="";
 let loadData={};
+let selectIndex="";
+
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
 // .then(data => console.log(data))
 
-function DD (selectIndex, newId) {
+function DD (selectIndex, selectId) {
 // this is the row where the DD change made	
-console.log("newId: ", newId);
+console.log("selectId: ", selectId);
 console.log("selectIndex: ", selectIndex);
-	let selectRow=(document.getElementById(newId));
+	let selectRow=(document.getElementById(selectId));
 	console.log(selectRow);
 //this is the DD value selected
 	let selectOption=selectRow.children[selectIndex];	
-	console.log(selectOption);
+	console.log("selected option: ",selectOption);
 	console.log(selectRow.value);
 	
-	selectRow.parentElement.setAttribute('value',selectRow.value);
+	selectRow.parentElement.setAttribute('value',selectOption.value);
+	selectRow.selectedIndex=selectIndex;
+	console.log(selectRow.selectedIndex);
 	console.log(selectRow.parentElement);
 }
 
@@ -52,14 +56,14 @@ function addRow() {
 // loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
-		console.log(newRowCols[i].id);
+		// console.log(newRowCols[i].id);
 		// console.log(newRow.children[i].children[0])
 	}
 // have to do child of child for cells with input boxes
 	for(i=1;i<8;i++){
 		newRow.children[i].children[0].id=(newRow.children[i].children[0].id+rowCount)
 	// console.log(newRow.children[0].id+rowCount);
-		console.log(newRow.children[i].children[0].id);
+		// console.log(newRow.children[i].children[0].id);
 	}
 // append new row to table & increase row count 
 	tabBody.appendChild(newRow);
@@ -74,14 +78,15 @@ function addRow() {
 }
 
 function myDeleteFunction(rowDelButt) {	
-	console.log("row: ",rowDelButt);
+	// console.log("row: ",rowDelButt);
+	// console.log("row count del func start: ", rowCount)
 	if(rowCount<2){
 		alert("Cannot delete final row");
 	} else if (rowCount>1) {
-		console.log(rowDelButt.parentElement.parentElement);
+		// console.log(rowDelButt.parentElement.parentElement);
 		rowDelButt.parentElement.parentElement.remove();
 		rowCount--;
-		console.log(rowCount);
+		// console.log("row count del func end: ",rowCount);
 	}
 }
 
@@ -160,6 +165,8 @@ function myLoadFunction () {
 		  		console.log('Success GET:', json);
 		  		// loadData=json;
 		  		// console.log("loadData:",loadData);
+		  		deleteOldRows();
+
 		  		returnData(json);
 			})
 			.catch((error) => {
@@ -170,46 +177,77 @@ function myLoadFunction () {
 }
 
 
-function returnData (json) {
-	console.log("rowCount: ", rowCount);
-	for(l=0;l<rowCount;l++){
-		let rowDelButt=tabBody.children[l].children[7].children[0];
-		console.log("rowDelButt: ", rowDelButt);
+function deleteOldRows () {
+let startRowCount=rowCount;
+	for(l=startRowCount-1;l>0;l--){
+		let delId = ("delButt"+l);
+		// console.log(delId)
+		let rowDelButt=document.getElementById(delId);
+		// console.log("rowDelButt: ", rowDelButt);
+		// console.log("rowCount: ", rowCount);
+		// console.log("l: ", l)
 		myDeleteFunction(rowDelButt)
 	}
+}
 
-
-
+function returnData (json) {
 	loadData=json;
 	console.log("loadData: ",loadData);	
 	let loadRows =	loadData.length;
 	console.log("loadData length: ",loadRows);
-	
 	
 	for(j=1;j<loadRows;j++) {
 		addRow();
 		
 	}
 
-
 	for(k=0;k<loadRows;k++) {
-		
-		console.log("newId: ",tabBody.children[k].children[1].children[0]);
-		console.log("selectedIndex: ",loadData[k].Type)
-
-		
+		let selectId =tabBody.children[k].children[1].children[0];
+		console.log("selectId: ", selectId);
+		let selectedType=loadData[k].Type;
+		console.log("selectedType: ", selectedType);
+		switchFunc (selectedType);
+		console.log("selected index: ", selectIndex);
+		DD(selectIndex, selectId.id)
+		//need to get order of selectedIndex, do a switch? 
 	}
-
-
-
-
-
-
 
 // onclick="DD(this.selectedIndex, this.id)"
 }
 
+function switchFunc (selectedType) {
 
+	switch (selectedType) {
+
+		case "DC":
+		selectIndex=0;
+		break;
+	
+		case "HWDP":
+		selectIndex=1;
+		break;
+
+		case "DP":
+		selectIndex=2;
+		break;
+
+		case "Stab":
+		selectIndex=3;
+		break;
+
+		case "Motor_RSS":
+		selectIndex=4;
+		break;
+
+		case "Sub_XO":
+		selectIndex=5;
+
+
+
+
+
+	}
+}
 	
 
 	
