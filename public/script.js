@@ -14,27 +14,29 @@ let selectIndex="";
 // .then(data => console.log(data))
 
 function DD (selectIndex, selectId) {
-// this is the row where the DD change made	
-console.log("selectId: ", selectId);
-console.log("selectIndex: ", selectIndex);
+
+	// console.log("selectId: ", selectId);
+	// console.log("selectIndex: ", selectIndex);
+	// set variable for the select element being processed
 	let selectRow=(document.getElementById(selectId));
-	console.log(selectRow);
-//this is the DD value selected
+	// console.log("selectRow:", selectRow);
+	//set variable for the select option element being processed
 	let selectOption=selectRow.children[selectIndex];	
-	console.log("selected option: ",selectOption);
-	console.log(selectRow.value);
-	
+	// console.log("selected option: ",selectOption);
+	// console.log(selectRow.value);
+	// sets the select element value to loaded or selected value
 	selectRow.parentElement.setAttribute('value',selectOption.value);
+	// sets select element to selected index(i.e. visible) to correct value, 
+	//this had to be done to use load data
 	selectRow.selectedIndex=selectIndex;
-	console.log(selectRow.selectedIndex);
-	console.log(selectRow.parentElement);
+	// console.log(selectRow.selectedIndex);
+	// console.log(selectRow.parentElement);
 }
 
 
 function input (valuex,idx) {
 //logs value and id of cell that is changed
-	console.log(valuex,idx);
-	
+	console.log(valuex,idx);	
 	let cell = document.getElementById(idx).parentElement;
 	console.log(cell);
 	console.log(cell.getAttribute("value"));
@@ -49,15 +51,21 @@ function addRow() {
 	let toolRow=document.getElementById('dataRow');
 	let newRow =toolRow.cloneNode(true);
 	newRow.id=newRow.id+rowCount;
-	// newRow.setAttribute("value",rowCount);
-	console.log(newRow);
-	let newRowCols = newRow.children
+	// reset Type value to DC as it is cloning from top row that may have been changed
+	// may need to do this for other values
+	newRow.children[1].setAttribute("value", "DC");
+	console.log("newRow.children[1].value: ", newRow.children[1])
 
+
+	// newRow.setAttribute("value",rowCount);
+	console.log("newRow: ",newRow);
+	let newRowCols = newRow.children
+	console.log("newRowCols: ",newRowCols);
 // loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
-		// console.log(newRowCols[i].id);
-		// console.log(newRow.children[i].children[0])
+		console.log(newRowCols[i].id);
+		console.log("x",newRow.children[i].children[0])
 	}
 // have to do child of child for cells with input boxes
 	for(i=1;i<8;i++){
@@ -98,41 +106,41 @@ function mySaveFunction () {
 	//set save row for each step of loop from 0 to rowCount
 		let saveRow=(tabBody.children[j])
 		// console.log(saveRow);
-		
+	//loop through each column in the row	
 		for(k=0;k<7;k++) {
-			//get property from row headers
+			//get object property from row headers
 			let prop=headers.children[k].textContent;
-			// console.log("saveRow.children[k]: ",saveRow.children[k])
+			// get object value from row
 			let val=saveRow.children[k].getAttribute("value");
 			// console.log("prop",prop);
 			// console.log("val",val);
-			
-			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});
-			
+			//add property to saveObject
+			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});	
 		}
-		// console.log("save Object: ", saveObject)
+		console.log("save Object: ", saveObject)
+		// convert object to JSON
 		myJSON=JSON.stringify(saveObject);
-		
-		// JSON.parse(saveObject);
+	
 		// console.log("myJSON: ", myJSON)
-
+		// add saveObject to saveArray
 		saveArray.push(saveObject);
-
+		//clear saveObject ready for next row
 		saveObject={};
 
 	}
 	
 	console.log("SaveArray",saveArray);
-
-	fetcher(saveArray);
+// sends sendArray to putData function to allow saving to DB
+	putData(saveArray);
 }
 
 
-function fetcher (saveArray) {
+function putData (saveArray) {
 	console.log("rowCount: ",rowCount);
 
-//do the loop here
+//loop thru saveArray doing a PUT request that is managed by server.js
 	for(i=0;i<rowCount;i++){
+		console.log("i: ",i);
 		fetch ('http://localhost:3000/'
 			, {
 			method: 'PUT',
@@ -143,6 +151,7 @@ function fetcher (saveArray) {
 				JSON.stringify(
 					saveArray[i]
 				)
+
 			})
 			.then(response => response.json())
 			.then(json => {
@@ -158,65 +167,86 @@ function fetcher (saveArray) {
 
 
 function myLoadFunction () {
-	
+	console.log("loading");
+// do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/')
+//return reponse from DB as JSON
 			.then(response => response.json())
 			.then(json => {
 		  		console.log('Success GET:', json);
-		  		// loadData=json;
-		  		// console.log("loadData:",loadData);
+//delete existing rows in browser
 		  		deleteOldRows();
-
+//send JSON data to returnData function
 		  		returnData(json);
 			})
 			.catch((error) => {
 		  		console.error('Error:', error);
 			});
-	
-
 }
 
-
 function deleteOldRows () {
+// set startRowCount variable to initial rowCount
 let startRowCount=rowCount;
+// loop through rows backwards except first row
 	for(l=startRowCount-1;l>0;l--){
+	//create variable that matches delButt id using l
 		let delId = ("delButt"+l);
 		// console.log(delId)
+	//get button element with delButt id
 		let rowDelButt=document.getElementById(delId);
 		// console.log("rowDelButt: ", rowDelButt);
 		// console.log("rowCount: ", rowCount);
 		// console.log("l: ", l)
+	// send button element to myDeleteFunction for deletion
 		myDeleteFunction(rowDelButt)
 	}
 }
 
 function returnData (json) {
+// adds rows
+//set loadData variable to loaded JSON from DB
 	loadData=json;
 	console.log("loadData: ",loadData);	
+// set loadRows to length of loadData (i.e. number of rows)
 	let loadRows =	loadData.length;
 	console.log("loadData length: ",loadRows);
-	
+// loop through loadRows and use addRow function to add same number of rows	
 	for(j=1;j<loadRows;j++) {
-		addRow();
-		
+		addRow();		
 	}
-
 	for(k=0;k<loadRows;k++) {
-		let selectId =tabBody.children[k].children[1].children[0];
-		console.log("selectId: ", selectId);
-		let selectedType=loadData[k].Type;
-		console.log("selectedType: ", selectedType);
-		switchFunc (selectedType);
-		console.log("selected index: ", selectIndex);
-		DD(selectIndex, selectId.id)
-		//need to get order of selectedIndex, do a switch? 
-	}
+		// loops through added rows & loadData for tool type column
+		// then sends to DD function to set loaded values
+		// gets the select element from table
+			let selectId =tabBody.children[k].children[1].children[0];
+			console.log("selectId: ", selectId);
+		//gets the tool type for dropdown from JSON
+			let selectedType=loadData[k].Type;
+			console.log("selectedType: ", selectedType);
+		// sends tool type to switch function to return the select index that tool type is at
+			switchFunc (selectedType);
+			console.log("selected index: ", selectIndex);
+		// sends index and id to DD function so they can be loaded 
+			DD(selectIndex, selectId.id)
+			//need to get order of selectedIndex, do a switch? 
+		}
+	loadDD(loadData,loadRows);
 
-// onclick="DD(this.selectedIndex, this.id)"
+// NEED TO ADD FUNCTION FOR ADDING NUMERICAL DATA USE INPUT FUNCTION
 }
 
-function switchFunc (selectedType) {
+function loadDD (loadData,loadRows) {
+	
 
+}
+
+function loadNum () {
+
+}
+
+
+function switchFunc (selectedType) {
+// returns index for tool type given in JSON
 	switch (selectedType) {
 
 		case "DC":
@@ -235,30 +265,29 @@ function switchFunc (selectedType) {
 		selectIndex=3;
 		break;
 
-		case "Motor_RSS":
+		case "M_LWD":
 		selectIndex=4;
 		break;
 
-		case "Sub_XO":
+		case "Motor_RSS":
 		selectIndex=5;
+		break;
 
-
-
-
-
+		case "Sub_XO":
+		selectIndex=6;
 	}
 }
 	
 
-	
+//	
 function deleteRows () {
+//deletes rows from database, used when new saveFunction called
 	fetch ('http://localhost:3000/'
 		, {
 		method: 'DELETE',
 	})
 	.then(response => console.log(response));
 
-	// mySaveFunction();
 }
 
 
