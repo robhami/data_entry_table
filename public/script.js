@@ -53,10 +53,12 @@ function addRow() {
 	let bhaTable=document.getElementById('BHAentry');
 	let toolRow=document.getElementById('dataRow');
 	let newRow =toolRow.cloneNode(true);
+	clearVals(newRow);
 	newRow.id=newRow.id+rowCount;
 	// reset Type value to DC as it is cloning from top row that may have been changed
 	// may need to do this for other values
 	newRow.children[1].setAttribute("value", "DC");
+
 	// console.log("newRow.children[1].value: ", newRow.children[1])
 
 
@@ -89,9 +91,9 @@ function addRow() {
 }
 
 function myDeleteFunction(rowDelButt) {	
-	// console.log("row: ",rowDelButt);
+	console.log("row: ",rowDelButt);
 	// console.log("row count del func start: ", rowCount)
-	if(rowCount<2){
+	if(rowCount<2 || rowDelButt.id==="delButt"){
 		alert("Cannot delete final row");
 	} else if (rowCount>1) {
 		// console.log(rowDelButt.parentElement.parentElement);
@@ -270,10 +272,16 @@ function loadNum (loadData,loadRows) {
 	}
 }
 
-function clearVals () {
-
+function clearVals (newRow) {
+	console.log("clearVals", newRow)
 	// can do this at start addRow
+	for(i=3;i<7;i++){
+		console.log(newRow.children[i]);
+		newRow.children[i].setAttribute("value",0);
+		newRow.children[i].children[0].setAttribute("value",0);
+	}
 }
+
 function switchFunc (selectedType) {
 // returns index for tool type given in JSON
 	switch (selectedType) {
@@ -317,6 +325,17 @@ function deleteRows () {
 	})
 	.then(response => console.log(response));
 
+}
+
+function createInput (thisx,selectedIndex) {
+	let optionSelect=thisx[selectedIndex].id
+	console.log(thisx[selectedIndex].id);
+	// console.log(selectedIndex,id);
+	// if(optionSelect==="saveOption"){
+	// 	let inputElement = document.createElement('input');
+	// 	inputGroupSelect04.parentElement.replaceChild(inputElement,inputGroupSelect04);
+	// }
+	
 }
 
 

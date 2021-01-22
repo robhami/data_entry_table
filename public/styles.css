@@ -1,24 +1,26 @@
 
 .container {
-	max-width: 570px;
+	max-width: 768px;
 	/*min-width:400px;*/
 }
 
 
-input {
-	display: block !important; 
-	padding: 0 !important; 
-	margin: 0 !important; 
-	width: 100% !important; 
-	height: 100% !important;
-	border-radius: 0 !important; 
-	line-height: 1 !important;
+.form-control-custom {
+	display: block ; 
+	padding: 0 ; 
+	margin: 0 ; 
+	width: 100% ; 
+	height: 100% ;
+	border-radius: 0 ; 
+	line-height: 1 ;
 	min-height: 25px;
-	/*border-color: blue !important;*/
+	/*border-color: blue !important;
 	/*background-color: #f7e96f !important;*/
-	border: 0 !important;
+	border: 0;
 	outline:0px;
 	-webkit-appearance: none;
+	text-align: center;
+	padding: 1px;
 }
 
 
@@ -30,23 +32,36 @@ td {
 	/*border-color: black !important;*/
 }
 
-#delButt {
-	display: inline-block !important; 
-	padding: 2px !important; 
-	margin: 1 auto !important; 
-	width: 50% !important; 
-	border-radius: 0 !important; 
-	line-height: 1 !important;
+.delButtClass {
+	/*display: inline-block; */
+	padding: 2px; 
+	margin: 1 auto ; 
+	/*width: 50% ;*/ 
+	border-radius: 0 ; 
+	line-height: 1 ;
 	min-height: 25px;
 	text-color: red;
 	
 }
 
+#moveButt{
+	padding: 2px; 
+	margin: 1 auto ; 
+	width: 35% ; 
+	border-radius: 0 ; 
+	line-height: 1 ;
+	min-height: 25px;
+	text-color: blue;
+
+}
 .table {
-	max-width: 570px;
+	max-width: 768px;
 	min-width: 450px;
 	border-collapse: collapse;
 	border-color: black !important;
+	border-width: 0.5px;
+	margin-bottom: 5px;
+	
 }
 
 .container {
@@ -55,7 +70,7 @@ td {
 
 }
 
-th, td, input {
+th, td {
 	text-align: center;
 	padding: 1px;
 	/*border-color: black !important;*/
@@ -69,16 +84,23 @@ th {
 .numEnt {
 	max-width: 60px;
 	min-width: 50px;
-
+	
 }
+
+
 
 #buttText {
 	color: red;
 }
-
-button {
-	margin: 1px;
+#movebuttText {
+	color: red;
 }
+
+#buttonBar {
+	padding: 0px;
+}
+
+
 
 select {
 	/*background-color: #f7e96f !important;*/
@@ -92,3 +114,35 @@ tr {
 	/*background-color: #f7e96f !important;*/
 
 }
+
+.custom-select {
+	max-width: 200px;
+	margin: 1px;
+
+}
+
+#custom-input {
+	max-width: 300px;
+	min-height: 23px ;
+	padding: 6px ;
+	/*border-color: black !important;
+	border: 5px !important;*/
+}
+
+.units {
+	background-color: #d1d0c8;
+	text-align: right;
+	padding-right: 0px;
+}
+
+#saveInput {
+
+}
+
+
+#buttonBar {
+	padding: 0px !important;
+}
+
+
+
