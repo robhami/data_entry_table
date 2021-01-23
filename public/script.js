@@ -8,6 +8,7 @@ let saveJSON={1:1};
 let myJSON="";
 let loadData={};
 let selectIndex="";
+let loadRows="";
 
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
@@ -42,6 +43,8 @@ function input (valuex,idx) {
 	console.log(cell.getAttribute("value"));
 	//sets parent of entered value to the value entered
 	cell.setAttribute("value", valuex)
+	// had to add this when loading to display
+	cell.children[0].setAttribute("value", valuex);
 	console.log(cell);
 }
 
@@ -50,22 +53,24 @@ function addRow() {
 	let bhaTable=document.getElementById('BHAentry');
 	let toolRow=document.getElementById('dataRow');
 	let newRow =toolRow.cloneNode(true);
+	clearVals(newRow);
 	newRow.id=newRow.id+rowCount;
 	// reset Type value to DC as it is cloning from top row that may have been changed
 	// may need to do this for other values
 	newRow.children[1].setAttribute("value", "DC");
-	console.log("newRow.children[1].value: ", newRow.children[1])
+
+	// console.log("newRow.children[1].value: ", newRow.children[1])
 
 
 	// newRow.setAttribute("value",rowCount);
-	console.log("newRow: ",newRow);
+	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
-	console.log("newRowCols: ",newRowCols);
+	// console.log("newRowCols: ",newRowCols);
 // loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
 		console.log(newRowCols[i].id);
-		console.log("x",newRow.children[i].children[0])
+		
 	}
 // have to do child of child for cells with input boxes
 	for(i=1;i<8;i++){
@@ -86,9 +91,9 @@ function addRow() {
 }
 
 function myDeleteFunction(rowDelButt) {	
-	// console.log("row: ",rowDelButt);
+	console.log("row: ",rowDelButt);
 	// console.log("row count del func start: ", rowCount)
-	if(rowCount<2){
+	if(rowCount<2 || rowDelButt.id==="delButt"){
 		alert("Cannot delete final row");
 	} else if (rowCount>1) {
 		// console.log(rowDelButt.parentElement.parentElement);
@@ -207,13 +212,27 @@ function returnData (json) {
 //set loadData variable to loaded JSON from DB
 	loadData=json;
 	console.log("loadData: ",loadData);	
+//sort load data because was coming out of sequence prob due to asynchronous behaviour
+	loadData.sort((a,b)=>(a.No > b.No) ? 1:-1);
+	console.log("loadData sorted: ",loadData);	
 // set loadRows to length of loadData (i.e. number of rows)
-	let loadRows =	loadData.length;
+	loadRows =	loadData.length;
 	console.log("loadData length: ",loadRows);
 // loop through loadRows and use addRow function to add same number of rows	
 	for(j=1;j<loadRows;j++) {
 		addRow();		
 	}
+	
+	loadDD(loadData,loadRows);
+	loadNum(loadData,loadRows)
+
+	console.log(loadRows);
+	
+	
+// NEED TO ADD FUNCTION FOR ADDING NUMERICAL DATA USE INPUT FUNCTION
+}
+
+function loadDD (loadData,loadRows) {
 	for(k=0;k<loadRows;k++) {
 		// loops through added rows & loadData for tool type column
 		// then sends to DD function to set loaded values
@@ -230,20 +249,38 @@ function returnData (json) {
 			DD(selectIndex, selectId.id)
 			//need to get order of selectedIndex, do a switch? 
 		}
-	loadDD(loadData,loadRows);
-
-// NEED TO ADD FUNCTION FOR ADDING NUMERICAL DATA USE INPUT FUNCTION
-}
-
-function loadDD (loadData,loadRows) {
-	
 
 }
 
-function loadNum () {
+function loadNum (loadData,loadRows) {
+	for(m=0;m<loadRows;m++) {
+		let loadRow=(tabBody.children[m]);
+		console.log(loadRow);
 
+		for(n=3;n<7;n++){
+			let loadRowNumCol=loadRow.children[n].children[0];
+			
+			let idx=loadRowNumCol.id;
+			console.log("idx: ", idx);
+			let prop=headers.children[n].textContent;
+			console.log("prop: ", prop);
+			let valuex=loadData[m][prop];
+			console.log("valuex: ", valuex)
+			input (valuex,idx);
+		}
+
+	}
 }
 
+function clearVals (newRow) {
+	console.log("clearVals", newRow)
+	// can do this at start addRow
+	for(i=3;i<7;i++){
+		console.log(newRow.children[i]);
+		newRow.children[i].setAttribute("value",0);
+		newRow.children[i].children[0].setAttribute("value",0);
+	}
+}
 
 function switchFunc (selectedType) {
 // returns index for tool type given in JSON
@@ -288,6 +325,17 @@ function deleteRows () {
 	})
 	.then(response => console.log(response));
 
+}
+
+function createInput (thisx,selectedIndex) {
+	let optionSelect=thisx[selectedIndex].id
+	console.log(thisx[selectedIndex].id);
+	// console.log(selectedIndex,id);
+	// if(optionSelect==="saveOption"){
+	// 	let inputElement = document.createElement('input');
+	// 	inputGroupSelect04.parentElement.replaceChild(inputElement,inputGroupSelect04);
+	// }
+	
 }
 
 
