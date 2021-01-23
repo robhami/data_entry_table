@@ -9,6 +9,7 @@ let myJSON="";
 let loadData={};
 let selectIndex="";
 let loadRows="";
+let saveInput="";
 
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
@@ -72,7 +73,7 @@ function addRow() {
 		console.log(newRowCols[i].id);
 		
 	}
-// have to do child of child for cells with input boxes
+// have to do child of child for cells with saveInput boxes
 	for(i=1;i<8;i++){
 		newRow.children[i].children[0].id=(newRow.children[i].children[0].id+rowCount)
 	// console.log(newRow.children[0].id+rowCount);
@@ -229,7 +230,7 @@ function returnData (json) {
 	console.log(loadRows);
 	
 	
-// NEED TO ADD FUNCTION FOR ADDING NUMERICAL DATA USE INPUT FUNCTION
+// NEED TO ADD FUNCTION FOR ADDING NUMERICAL DATA USE saveInput FUNCTION
 }
 
 function loadDD (loadData,loadRows) {
@@ -266,7 +267,7 @@ function loadNum (loadData,loadRows) {
 			console.log("prop: ", prop);
 			let valuex=loadData[m][prop];
 			console.log("valuex: ", valuex)
-			input (valuex,idx);
+			saveInput (valuex,idx);
 		}
 
 	}
@@ -327,12 +328,72 @@ function deleteRows () {
 
 }
 
+function getSaveInput (input) {	
+	saveInput=input;
+	console.log(saveInput);
+}
+
+function saveChecker () {
+	// console.log(saves);
+	let returnSave="";
+	console.log("saveInput: ", saveInput);
+	//gets length/count of save options
+	let savesLen=document.getElementById("saves").options.length;
+	console.log(savesLen);
+	console.log(returnSave);
+
+	// assign function return to returnSave
+	returnSave = function saveCheck	() {
+		// console.log("RSinput: ", saveInput);
+		// console.log("RSsaveName: ",saveName);
+		
+		//loop through options to see if saveInput matches 
+		for (x=0;x<savesLen;x++) {	
+		let saveName=saves.children[x].textContent;
+		console.log("loop saveName: ", saveName);
+
+		//if match return value
+			if (saveInput===saveName){
+				console.log("save file exists");
+				return(saveInput)
+			} 
+
+		}
+		// otherwise return false 
+		return(false)
+	}
+
+	// if returnSave not returned (i.e. false) do something- 
+	if(!returnSave()){
+		console.log ("Please select save file or enter new save file name");
+		createDB(saveInput);
+	} else {
+		
+		console.log("returnSave: ", returnSave())
+		setDB(returnSave());
+	}
+
+}	
+
+
+function setDB (returnSave) {
+	alert(returnSave + " already exists overwrite it?");
+}
+
+
+function createDB (saveInput) {
+	alert(saveInput + " is a new filename, create new save file?")
+	console.log("DB will need to be created with name: ", saveInput);
+}
+
+
+// this changed dropdown to saveInput no longer need because used HTML 5 datalist
 function createInput (thisx,selectedIndex) {
 	let optionSelect=thisx[selectedIndex].id
 	console.log(thisx[selectedIndex].id);
 	// console.log(selectedIndex,id);
 	// if(optionSelect==="saveOption"){
-	// 	let inputElement = document.createElement('input');
+	// 	let inputElement = document.createElement('saveInput');
 	// 	inputGroupSelect04.parentElement.replaceChild(inputElement,inputGroupSelect04);
 	// }
 	

@@ -28,7 +28,7 @@
 				    <th scope="col" rowspan="2">Move</th>
 			    </tr>
 
-			    <tr id="headers">
+			    <tr id="headers2">
 			    	
 				    <th scope="col">
 				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
@@ -99,7 +99,7 @@
 						<input class="form-control-custom" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
 					<td>
 						
-				   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
+				   		<button type="button" onClick="myDeleteFunction(this)" id="delButt" class="delButtClass"><a id="buttText">X</a></button>
 				   		
 				   	</td>
 
@@ -123,7 +123,8 @@
 						<button type="button" class="btn btn-primary btn" onClick="myLoadFunction()" id="calcButt">Load</button>
 					</div>
 					<!-- <select class="custom-select" id="inputGroupSelect04" onchange="createInput(this,this.selectedIndex)"> -->
-							<input type="text" list="saves" id="saveInput" onfocus="this.value=''" onchange="this.blur();">
+							<input type="text" list="saves" id="saveInput" onfocus="this.value=''" 
+							onchange="this.blur();" oninput="getSaveInput(this.value)">
 							<datalist id="saves">
 								<!-- <option selected>Choose...</option> -->
 								<option>Example One</option>
@@ -136,7 +137,7 @@
 					
 					<div class="input-group-append">
 						<button type="submit" class="btn btn-success btn" onClick="mySaveFunction()" id="savButt">Save</button>
-						<button type="submit" class="btn btn-danger btn" onClick="" id="saveAsButt">Save As</button>
+						<button type="submit" class="btn btn-danger btn" onClick="saveChecker()" id="saveAsButt">Save As</button>
 					</div>
 				</div>
 
