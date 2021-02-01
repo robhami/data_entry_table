@@ -10,6 +10,7 @@ let loadData={};
 let selectIndex="";
 let loadRows="";
 let saveInput="";
+let saveInputJson={};
 
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
@@ -37,7 +38,7 @@ function DD (selectIndex, selectId) {
 
 
 function input (valuex,idx) {
-//logs value and id of cell that is changed
+	//logs value and id of cell that is changed
 	console.log(valuex,idx);	
 	let cell = document.getElementById(idx).parentElement;
 	console.log(cell);
@@ -67,24 +68,24 @@ function addRow() {
 	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
 	// console.log("newRowCols: ",newRowCols);
-// loop through newRow entries and change id based on original id + rowcount
+	// loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
 		console.log(newRowCols[i].id);
 		
 	}
-// have to do child of child for cells with saveInput boxes
+	// have to do child of child for cells with saveInput boxes
 	for(i=1;i<8;i++){
 		newRow.children[i].children[0].id=(newRow.children[i].children[0].id+rowCount)
 	// console.log(newRow.children[0].id+rowCount);
 		// console.log(newRow.children[i].children[0].id);
 	}
-// append new row to table & increase row count 
+	// append new row to table & increase row count 
 	tabBody.appendChild(newRow);
 	rowCount++;
 
 	
-// change row # text and value based on increased row count
+	// change row # text and value based on increased row count
 	// console.log(newRow.children[0]);
 	newRow.children[0].textContent=rowCount;
 	newRow.children[0].setAttribute("value",rowCount);
@@ -136,15 +137,15 @@ function mySaveFunction () {
 	}
 	
 	console.log("SaveArray",saveArray);
-// sends sendArray to putData function to allow saving to DB
+	// sends sendArray to putData function to allow saving to DB
 	putData(saveArray);
 }
 
 
 function putData (saveArray) {
 	console.log("rowCount: ",rowCount);
-
-//loop thru saveArray doing a PUT request that is managed by server.js
+	//*****need to direct to correct save file******
+	//loop thru saveArray doing a PUT request that is managed by server.js
 	for(i=0;i<rowCount;i++){
 		console.log("i: ",i);
 		fetch ('http://localhost:3000/'
@@ -174,15 +175,15 @@ function putData (saveArray) {
 
 function myLoadFunction () {
 	console.log("loading");
-// do a GET request to get data from DB. GET request is managed by server.js	
+	// do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/')
-//return reponse from DB as JSON
+	//return reponse from DB as JSON
 			.then(response => response.json())
 			.then(json => {
 		  		console.log('Success GET:', json);
-//delete existing rows in browser
+	//delete existing rows in browser
 		  		deleteOldRows();
-//send JSON data to returnData function
+	//send JSON data to returnData function
 		  		returnData(json);
 			})
 			.catch((error) => {
@@ -191,9 +192,9 @@ function myLoadFunction () {
 }
 
 function deleteOldRows () {
-// set startRowCount variable to initial rowCount
-let startRowCount=rowCount;
-// loop through rows backwards except first row
+	// set startRowCount variable to initial rowCount
+	let startRowCount=rowCount;
+	// loop through rows backwards except first row
 	for(l=startRowCount-1;l>0;l--){
 	//create variable that matches delButt id using l
 		let delId = ("delButt"+l);
@@ -209,17 +210,17 @@ let startRowCount=rowCount;
 }
 
 function returnData (json) {
-// adds rows
-//set loadData variable to loaded JSON from DB
+	// adds rows
+	//set loadData variable to loaded JSON from DB
 	loadData=json;
 	console.log("loadData: ",loadData);	
-//sort load data because was coming out of sequence prob due to asynchronous behaviour
+	//sort load data because was coming out of sequence prob due to asynchronous behaviour
 	loadData.sort((a,b)=>(a.No > b.No) ? 1:-1);
 	console.log("loadData sorted: ",loadData);	
-// set loadRows to length of loadData (i.e. number of rows)
+	// set loadRows to length of loadData (i.e. number of rows)
 	loadRows =	loadData.length;
 	console.log("loadData length: ",loadRows);
-// loop through loadRows and use addRow function to add same number of rows	
+	// loop through loadRows and use addRow function to add same number of rows	
 	for(j=1;j<loadRows;j++) {
 		addRow();		
 	}
@@ -267,7 +268,7 @@ function loadNum (loadData,loadRows) {
 			console.log("prop: ", prop);
 			let valuex=loadData[m][prop];
 			console.log("valuex: ", valuex)
-			saveInput (valuex,idx);
+			input (valuex,idx);
 		}
 
 	}
@@ -284,7 +285,7 @@ function clearVals (newRow) {
 }
 
 function switchFunc (selectedType) {
-// returns index for tool type given in JSON
+	// returns index for tool type given in JSON
 	switch (selectedType) {
 
 		case "DC":
@@ -317,9 +318,8 @@ function switchFunc (selectedType) {
 }
 	
 
-//	
 function deleteRows () {
-//deletes rows from database, used when new saveFunction called
+	//deletes rows from database, used when new saveFunction called
 	fetch ('http://localhost:3000/'
 		, {
 		method: 'DELETE',
@@ -331,60 +331,131 @@ function deleteRows () {
 function getSaveInput (input) {	
 	saveInput=input;
 	console.log(saveInput);
+	
+}
+
+function saveInputJsonCreate () {
+	let saveInputObj={name};
+	saveInputObj.name=saveInput;
+	console.log(saveInputObj);
+	saveInputJson=JSON.stringify(saveInputObj);
+	console.log(saveInputJson);
 }
 
 function saveChecker () {
-	// console.log(saves);
+	console.log(saveInput);
+	if(saveInput===""){
+		console.log("No save name entered or selected. Please add save name");
+		return (false);
+	}
+
 	let returnSave="";
 	console.log("saveInput: ", saveInput);
 	//gets length/count of save options
 	let savesLen=document.getElementById("saves").options.length;
 	console.log(savesLen);
-	console.log(returnSave);
+	// console.log(returnSave);
 
 	// assign function return to returnSave
-	returnSave = function saveCheck	() {
-		// console.log("RSinput: ", saveInput);
-		// console.log("RSsaveName: ",saveName);
-		
+	returnSave = function saveCheck	() {		
 		//loop through options to see if saveInput matches 
 		for (x=0;x<savesLen;x++) {	
-		let saveName=saves.children[x].textContent;
-		console.log("loop saveName: ", saveName);
+			let saveName=saves.children[x].textContent;
+			console.log("loop saveName: ", saveName);
 
-		//if match return value
-			if (saveInput===saveName){
-				console.log("save file exists");
-				return(saveInput)
-			} 
-
+			//if match return value
+				if (saveInput===saveName){
+					console.log("save file exists");
+					return(saveInput)
+				} 
 		}
 		// otherwise return false 
 		return(false)
 	}
-
 	// if returnSave not returned (i.e. false) do something- 
-	if(!returnSave()){
-		console.log ("Please select save file or enter new save file name");
+	if(!returnSave()){	
 		createDB(saveInput);
-	} else {
-		
-		console.log("returnSave: ", returnSave())
-		setDB(returnSave());
+	} else {	
+		setDB(saveInput);
 	}
 
 }	
 
+function setDB (saveInput) {
 
-function setDB (returnSave) {
-	alert(returnSave + " already exists overwrite it?");
+	let question=window.confirm(saveInput + " already exists overwrite it?");
+	if(!question){
+		return(false)
+	}
+	
+	saveInputJsonCreate();
+	console.log("saveInputJson: ", saveInputJson);
+	fetch ('http://localhost:3000/reSave'
+			, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: 
+				saveInputJson
+			})
+
+			.then(response => response.json())
+			.then(json => {
+		  		console.log('Success:', json);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+
+	
+
 }
 
 
 function createDB (saveInput) {
-	alert(saveInput + " is a new filename, create new save file?")
-	console.log("DB will need to be created with name: ", saveInput);
+	let answer=window.confirm(saveInput + " is a new filename, create new save file?")
+
+	if (!answer) {
+		return (false)
+	}
+	// add option to dropdown
+	alert("Savefile created with name: "+ saveInput);
+	console.log(saves);
+	let savesList =document.getElementById("saves");
+	let newSave =document.createElement("option");
+	savesList.appendChild(newSave);
+	newSave.textContent=saveInput;
+	newSave.setAttribute('value',saveInput);
+	console.log("newSave: ",newSave);
+
+	//
+	saveInputJsonCreate();
+	console.log("saveInputJson: ", saveInputJson);
+	//
+
+	fetch ('http://localhost:3000/newSave'
+			, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: 
+				saveInputJson
+			})
+
+			.then(response => response.json())
+			.then(json => {
+		  		console.log('Success:', json);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+
+	mySaveFunction ();
 }
+
+
 
 
 // this changed dropdown to saveInput no longer need because used HTML 5 datalist

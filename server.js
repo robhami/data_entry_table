@@ -33,7 +33,13 @@ const db  = knex({
 
 console.log(db.select('*').from('bhainput'));
 
+app.get('/test' ,(req, res)=>{
+	res.send("Test worked!");
+});
 
+app.post('/posttest' ,(req, res)=>{
+	res.send("Post test worked!");
+});
 
 app.get('/' ,(req, res)=>{
 	
@@ -48,15 +54,22 @@ app.get('/' ,(req, res)=>{
 
 });
 
+let saveInputJson = require ('./public/script.js')
+let reSaveTable=saveInputJson;
+console.log(reSaveTable);
+
+
+
 app.put('/',(req,res)=>{
 	
-	// console.log("rowCount", rowCount);
+	console.log("post/");
+//sends each line from table to newRows variable
 	const newRows=req.body;
-	console.log("new rows put",req.body);
-	
+	console.log("new rows post",req.body);
+	console.log("reSaveTable: ", reSaveTable);
 
-	 db('bhainput')
-	 	
+//selects table based on reSaveTable
+	 db('bhainput')	 	
 		.returning('*')
 		.insert({
 			No: newRows.No,	
@@ -66,20 +79,73 @@ app.put('/',(req,res)=>{
 			ID: newRows.ID,
 			Weight: newRows.Weight,
 			Length: newRows.Length
-
-
 		})
 		
 	.then(response => {
-		res.json(response);
-		
+		res.json();	
 	})
+	.catch((err) => {
+	 	console.log(err);
+	 	throw err
+	 })
+	
+})
+
+
+app.put('/newSave',(req,res)=>{
+	console.log("put newSave");
+	let newTable=req.body.name
+	console.log(newTable);
+	//creates new table with headers
+	 db.schema.createTable(newTable, function(table) {
+	 	table.increments('No');
+	 	table.string('Type')
+	 	table.string('Tool');
+	 	table.decimal('OD');
+	 	table.decimal('ID');
+	 	table.decimal('Weight');
+	 	table.decimal('Length');
+	 	// table.timestamps();
+	 })
 
 	
-	// res.json(database.users[database.users.length-1]);
-	// res.json(body);
-	// res.('hello');
+	.then(response => {
+		response
+	})
+	.then (() =>console.log("table created"))
+	// })
+	.catch((err) => {
+	 		console.log(err);
+	 		throw err
+	 	})
 })
+
+app.put('/reSave',(req,res)=>{
+	console.log("put resave")
+	reSaveTable=req.body.name
+	console.log("reSaveTable: ",reSaveTable)
+		if(reSaveTable) {
+			res.send(reSaveTable);
+	  	} else {
+	    res.status(400).send("record not found");
+	  	}
+
+
+	// reSaveTableFunc => {
+	// 	req.body.name
+	// } 
+
+	// .then(response => {
+	// 	response.json()
+	// })
+	// .catch((err) => {
+	//  		console.log(err);
+	//  		throw err
+	//  	})
+})
+
+
+
 
 
 app.delete('/',(req,res)=>{
@@ -90,7 +156,7 @@ console.log("serv delete");
 			res.json(response)
 		})
 
-	})
+})
 
 
 
