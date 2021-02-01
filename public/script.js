@@ -117,8 +117,8 @@ function mySaveFunction () {
 			let prop=headers.children[k].textContent;
 			// get object value from row
 			let val=saveRow.children[k].getAttribute("value");
-			// console.log("prop",prop);
-			// console.log("val",val);
+			console.log("prop",prop);
+			console.log("val",val);
 			//add property to saveObject
 			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});	
 		}
