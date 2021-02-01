@@ -327,6 +327,46 @@ function deleteRows () {
 
 }
 
+
+function tablesListGet () {
+	console.log("loading tablesList");
+	// do a GET request to get data from DB. GET request is managed by server.js	
+	fetch ('http://localhost:3000/tableName')
+	//return reponse from DB as JSON
+		.then(response => response.json())
+		.then(json => {
+	  		console.log('Success GET tableName:', json);
+			tablesListCreate (json)
+		})
+
+		.catch((error) => {
+	  		console.error('Error:', error);
+		});
+}
+
+function tablesListCreate (tablesList) {
+	console.log('Success GET tableListCreate:', tablesList);
+	let tableCount=tablesList.length;
+	console.log(tableCount);
+	
+	for (i=0;i<tableCount;i++){
+		console.log(tablesList[i].tablename);
+		let savesList = document.getElementById("saves");
+		let newOption = document.createElement("option");
+
+
+		savesList.appendChild(newOption);
+		newOption.id=(tablesList[i].tablename);
+		newOption.textContent=(tablesList[i].tablename);
+	}
+
+}
+
+
+
+
+
+
 function createInput (thisx,selectedIndex) {
 	let optionSelect=thisx[selectedIndex].id
 	console.log(thisx[selectedIndex].id);

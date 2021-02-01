@@ -31,7 +31,7 @@ const db  = knex({
   }
 });
 
-console.log(db.select('*').from('bhainput'));
+console.log("DBX", db.select('*').from('bhainput'));
 
 
 
@@ -44,17 +44,33 @@ app.get('/' ,(req, res)=>{
 	});
 	
 	// res.send("hello");
-	console.log("hello", req.body);
+	
 
 });
 
-app.put('/',(req,res)=>{
+app.get('/tableName' ,(req, res)=>{
 	
+	
+	db('pg_catalog.pg_tables')
+	.select('tablename')
+	.where({schemaname:'public'})
+
+	.then(function(data) {
+
+		res.send(data);
+		// let saveData=res.send(data);
+	});
+	
+	// res.send("hello");
+	
+
+});
+
+app.put('/',(req,res)=>{	
 	// console.log("rowCount", rowCount);
 	const newRows=req.body;
 	console.log("new rows put",req.body);
 	
-
 	 db('bhainput')
 	 	
 		.returning('*')
@@ -66,18 +82,35 @@ app.put('/',(req,res)=>{
 			ID: newRows.ID,
 			Weight: newRows.Weight,
 			Length: newRows.Length
-
-
 		})
 		
 	.then(response => {
 		res.json(response);
 	})
 
-	
-	// res.json(database.users[database.users.length-1]);
-	// res.json(body);
-	// res.('hello');
+})
+
+app.post('/',(req,res)=>{
+	let newTable=req.body.name;
+	console.log(newTable);
+	// res.send(newTable);
+	db.schema.createTable(newTable, function(table) {
+	 	table.increments('No');
+	 	table.string('Type')
+	 	table.string('Tool');
+	 	table.decimal('OD');
+	 	table.decimal('ID');
+	 	table.decimal('Weight');
+	 	table.decimal('Length');
+	 	// table.timestamps();
+	 })
+
+	.then(function(data) {
+
+		res.send(data);
+		// let saveData=res.send(data);
+	});
+
 })
 
 
