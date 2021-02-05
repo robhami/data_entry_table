@@ -49,27 +49,33 @@ app.get('/' ,(req, res)=>{
 });
 
 app.get('/tableName' ,(req, res)=>{
-	
-	
+		
 	db('pg_catalog.pg_tables')
 	.select('tablename')
 	.where({schemaname:'public'})
 
 	.then(function(data) {
-
 		res.send(data);
-		// let saveData=res.send(data);
 	});
-	
-	// res.send("hello");
-	
-
 });
 
-app.put('/',(req,res)=>{	
+let saveName = "";
+
+app.put('/saveName', (req, res)=>{
+	
+	saveName = req.body
+	res.send(saveName)
+	console.log(saveName)
+	
+
+})
+
+app.put('/',(req,res)=>{
+//add new data to existing table, need to make table name dynamic	
 	// console.log("rowCount", rowCount);
 	const newRows=req.body;
 	console.log("new rows put",req.body);
+	console.log("req params",req.params);
 	
 	 db('bhainput')
 	 	
@@ -91,6 +97,7 @@ app.put('/',(req,res)=>{
 })
 
 app.post('/',(req,res)=>{
+	//create new table, need function is script.js to send req.body.name
 	let newTable=req.body.name;
 	console.log(newTable);
 	// res.send(newTable);

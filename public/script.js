@@ -103,9 +103,40 @@ function myDeleteFunction(rowDelButt) {
 	}
 }
 
+function sendSaveName () {
+	let saveSelect =document.getElementById('saveInput').value;
+
+	console.log("saves: ", saveSelect);
+	let saveJSON= {"name" : saveSelect}
+	console.log("saveJson: ",saveJSON)
+
+	fetch ('http://localhost:3000/saveName'
+		,{
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(
+				saveJSON
+				)
+			})
+			.then(response => response.json())
+			.then(saveNamex => {
+		  		console.log('Success:', saveNamex);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+
+
+
+}
+
+
 function mySaveFunction () {
 	deleteRows();
 	saveArray=[];
+	sendSaveName ()
 
 	for(j=0;j<rowCount;j++) {
 	//set save row for each step of loop from 0 to rowCount
@@ -117,8 +148,8 @@ function mySaveFunction () {
 			let prop=headers.children[k].textContent;
 			// get object value from row
 			let val=saveRow.children[k].getAttribute("value");
-			console.log("prop",prop);
-			console.log("val",val);
+			// console.log("prop",prop);
+			// console.log("val",val);
 			//add property to saveObject
 			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});	
 		}
@@ -146,6 +177,8 @@ function putData (saveArray) {
 //loop thru saveArray doing a PUT request that is managed by server.js
 	for(i=0;i<rowCount;i++){
 		console.log("i: ",i);
+		
+
 		fetch ('http://localhost:3000/'
 			, {
 			method: 'PUT',
@@ -273,10 +306,10 @@ function loadNum (loadData,loadRows) {
 }
 
 function clearVals (newRow) {
-	console.log("clearVals", newRow)
+	// console.log("clearVals", newRow)
 	// can do this at start addRow
 	for(i=3;i<7;i++){
-		console.log(newRow.children[i]);
+		// console.log(newRow.children[i]);
 		newRow.children[i].setAttribute("value",0);
 		newRow.children[i].children[0].setAttribute("value",0);
 	}
@@ -327,6 +360,7 @@ function deleteRows () {
 
 }
 
+tablesListGet ()
 
 function tablesListGet () {
 	console.log("loading tablesList");
@@ -361,10 +395,6 @@ function tablesListCreate (tablesList) {
 	}
 
 }
-
-
-
-
 
 
 function createInput (thisx,selectedIndex) {
