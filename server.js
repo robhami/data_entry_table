@@ -36,8 +36,8 @@ const db  = knex({
 let saveName = {"name" : "bhainput"};
 //pulls data from database
 app.get('/' ,(req, res)=>{
-	
-	db.select('*').from('bhainput').then(function(data) {
+	console.log("loading ", saveName.name)
+	db.select('*').from(saveName.name).then(function(data) {
 
 		res.send(data);
 		// let saveData=res.send(data);

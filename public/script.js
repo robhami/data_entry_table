@@ -206,7 +206,7 @@ function putData (saveArray) {
 
 function myLoadFunction () {
 	
-	
+	sendSaveName ()
 	// console.log("loading: ", saveName.name);
 // do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/')
