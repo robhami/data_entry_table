@@ -205,7 +205,9 @@ function putData (saveArray) {
 
 
 function myLoadFunction () {
-	console.log("loading");
+	
+	
+	// console.log("loading: ", saveName.name);
 // do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/')
 //return reponse from DB as JSON
@@ -352,6 +354,7 @@ function switchFunc (selectedType) {
 //	
 function deleteRows () {
 //deletes rows from database, used when new saveFunction called
+	sendSaveName ()
 	fetch ('http://localhost:3000/'
 		, {
 		method: 'DELETE',

@@ -31,10 +31,10 @@ const db  = knex({
   }
 });
 
-console.log("DBX", db.select('*').from('bhainput'));
+// console.log("DBX", db.select('*').from('bhainput'));
 
-
-
+let saveName = {"name" : "bhainput"};
+//pulls data from database
 app.get('/' ,(req, res)=>{
 	
 	db.select('*').from('bhainput').then(function(data) {
@@ -48,6 +48,7 @@ app.get('/' ,(req, res)=>{
 
 });
 
+//get list of table names
 app.get('/tableName' ,(req, res)=>{
 		
 	db('pg_catalog.pg_tables')
@@ -59,25 +60,26 @@ app.get('/tableName' ,(req, res)=>{
 	});
 });
 
-let saveName = "";
 
+
+//update variable saveName
 app.put('/saveName', (req, res)=>{
 	
 	saveName = req.body
 	res.send(saveName)
-	console.log(saveName)
+	console.log("This save name has been sent to server: ",saveName)
 	
-
 })
 
+//add new data to existing table, need to make table name dynamic
 app.put('/',(req,res)=>{
-//add new data to existing table, need to make table name dynamic	
+	
 	// console.log("rowCount", rowCount);
 	const newRows=req.body;
-	console.log("new rows put",req.body);
-	console.log("req params",req.params);
-	
-	 db('bhainput')
+	console.log("below row added to table ",saveName.name,req.body);
+	// console.log("req params",req.params);
+	// console.log("above data added to this table: ",saveName.name);
+	 db(saveName.name)
 	 	
 		.returning('*')
 		.insert({
@@ -93,11 +95,14 @@ app.put('/',(req,res)=>{
 	.then(response => {
 		res.json(response);
 	})
-
+	.catch((error) => {
+	  		console.error('Error:', error);
+	});
 })
 
+//create new table, need function is script.js to send req.body.name
 app.post('/',(req,res)=>{
-	//create new table, need function is script.js to send req.body.name
+	
 	let newTable=req.body.name;
 	console.log(newTable);
 	// res.send(newTable);
@@ -120,20 +125,16 @@ app.post('/',(req,res)=>{
 
 })
 
-
+//deletes rows from database, used when new saveFunction called
 app.delete('/',(req,res)=>{
-console.log("serv delete");
-	db('bhainput')	 	
+console.log("deleting: ", saveName.name);
+	db(saveName.name)	 	
 		 .del()
 		.then(response => {
 			res.json(response)
 		})
 
 	})
-
-
-
-
 
 app.listen(3000, ()=>{
 	console.log('app is running on port 3000');
