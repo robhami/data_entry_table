@@ -1,14 +1,16 @@
 
 
 let rowCount=1;
-
 let saveObject={};
 let saveArray=[];
-let saveJSON={1:1};
-let myJSON="";
-let loadData={};
+// let saveJSON={1:1};
+// let myJSON="";
+// let loadData={};
 let selectIndex="";
-let loadRows="";
+// let loadRows="";
+tablesListGet ()
+
+
 
 // fetch('http://localhost:3000/')
 // .then(response => response.json())
@@ -105,7 +107,7 @@ function myDeleteFunction(rowDelButt) {
 
 function sendSaveName () {
 	let saveSelect =document.getElementById('saveInput').value;
-
+	savesExist(saveSelect)
 	console.log("saves: ", saveSelect);
 	let saveJSON= {"name" : saveSelect}
 	console.log("saveJson: ",saveJSON)
@@ -132,6 +134,31 @@ function sendSaveName () {
 
 }
 
+function savesExist (saveSelect) {
+		
+	let saveExistCheck=saveCheckExist (saveSelect);
+	
+	if (saveExistCheck){
+		console.log("exists")
+	} else {
+		console.log("doesn't exist")
+	}
+
+}
+
+
+function saveCheckExist (saveSelect) {
+	let savesLength=saves.children.length;
+	console.log(savesLength);
+	console.log(saveSelect);
+	for(x=0;x<savesLength;x++){
+		console.log(saves.children[x].value);
+		if(saves.children[x].value===saveSelect) {
+			console.log(saveSelect," already exists overwrite it?");
+			return (true)
+		} 
+	}
+}
 
 function mySaveFunction () {
 	deleteRows();
@@ -155,7 +182,7 @@ function mySaveFunction () {
 		}
 		console.log("save Object: ", saveObject)
 		// convert object to JSON
-		myJSON=JSON.stringify(saveObject);
+		let myJSON=JSON.stringify(saveObject);
 	
 		// console.log("myJSON: ", myJSON)
 		// add saveObject to saveArray
@@ -363,7 +390,7 @@ function deleteRows () {
 
 }
 
-tablesListGet ()
+
 
 function tablesListGet () {
 	console.log("loading tablesList");
@@ -371,9 +398,9 @@ function tablesListGet () {
 	fetch ('http://localhost:3000/tableName')
 	//return reponse from DB as JSON
 		.then(response => response.json())
-		.then(json => {
-	  		console.log('Success GET tableName:', json);
-			tablesListCreate (json)
+		.then(tablesList => {
+	  		console.log('Success GET tableName:', tablesList);
+			tablesListCreate (tablesList)
 		})
 
 		.catch((error) => {
