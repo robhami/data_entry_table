@@ -68,24 +68,24 @@ function addRow() {
 	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
 	// console.log("newRowCols: ",newRowCols);
-// loop through newRow entries and change id based on original id + rowcount
+	// loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
 		console.log(newRowCols[i].id);
 		
 	}
-// have to do child of child for cells with input boxes
+	// have to do child of child for cells with input boxes
 	for(i=1;i<8;i++){
 		newRow.children[i].children[0].id=(newRow.children[i].children[0].id+rowCount)
 	// console.log(newRow.children[0].id+rowCount);
 		// console.log(newRow.children[i].children[0].id);
 	}
-// append new row to table & increase row count 
+	// append new row to table & increase row count 
 	tabBody.appendChild(newRow);
 	rowCount++;
 
 	
-// change row # text and value based on increased row count
+	// change row # text and value based on increased row count
 	// console.log(newRow.children[0]);
 	newRow.children[0].textContent=rowCount;
 	newRow.children[0].setAttribute("value",rowCount);
@@ -105,13 +105,16 @@ function myDeleteFunction(rowDelButt) {
 	}
 }
 
-function sendSaveName () {
+function sendSaveName (isSave) {
+	console.log("isSave: ", isSave)
 	let saveSelect =document.getElementById('saveInput').value;
-	savesExist(saveSelect)
 	console.log("saves: ", saveSelect);
 	let saveJSON= {"name" : saveSelect}
 	console.log("saveJson: ",saveJSON)
-
+	if(isSave) {
+		savesExist(saveSelect, saveJSON)
+	}
+	
 	fetch ('http://localhost:3000/saveName'
 		,{
 			method: 'PUT',
@@ -129,12 +132,11 @@ function sendSaveName () {
 			.catch((error) => {
 		  		console.error('Error:', error);
 			});
-
-		// savesExist(saveSelect)
-
 }
 
-function savesExist (saveSelect) {
+
+
+function savesExist (saveSelect, saveJSON) {
 	// console.log(saveSelect);
 	// set saveExistCheck to false to show no match 
 	let saveExistCheck= false;
@@ -149,6 +151,7 @@ function savesExist (saveSelect) {
 	console.log("exists")
 		if(confirm(saveSelect + " already exists overwrite it?")){
 			console.log("Proceeding to save");
+			deleteRows();
 		} else {
 			throw(alert("Please select save name. Not Saved"));				
 		}
@@ -158,7 +161,13 @@ function savesExist (saveSelect) {
 
 	if(confirm(saveSelect + " does not exist create new save file?")){
 			console.log("Proceeding to save");
-			createNewSaveFile ()
+			newSaveFile();
+		//added
+			async function newSaveFile () {
+				const response =createNewSaveFile (saveSelect, saveJSON);
+				const data = await response;
+				console.log("data async",data);
+			}
 		} else {
 			throw(alert("Please select save name. Not Saved"));			
 		}
@@ -168,13 +177,12 @@ function savesExist (saveSelect) {
 
 function saveLoopList (saveSelect) {
 	let savesLength=saves.children.length;
-	console.log(savesLength);
-	console.log("saveSelect: ", saveSelect);
+	// console.log(savesLength);
+	// console.log("saveSelect: ", saveSelect);
 	
-
 		for(x=0;x<savesLength;x++){
 				// console.log("x: ", x);
-				console.log("test against: ", saves.children[x].value);
+				// console.log("test against: ", saves.children[x].value);
 				if(saves.children[x].value===saveSelect) {
 					console.log(saveSelect," already exists overwrite it?");				
 						return (true)
@@ -185,16 +193,42 @@ function saveLoopList (saveSelect) {
 
 
 // need to create new save file
-function createNewSaveFile () {
+async function   createNewSaveFile (saveSelect, saveJSON) {
+ 	console.log ("creating new save file: ", saveSelect, saveJSON)
+ 
+ 	const settings =
+ 			{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: 
+				JSON.stringify(
+					saveJSON
+				)
 
+	};
+	// not sure I need this to be async await but left it there. 
+	//I think the async await in saveExists is making sure table created before proceeding
+			try {
+        		const fetchResponse = await fetch('http://localhost:3000/', settings);
+        		const data = await fetchResponse.json();
+        		return("awaited", data);
+    		}
+
+			catch(error) {
+		  		console.error('Error:', error);
+			}
 }
 
 
+
 function mySaveFunction () {
-	
+	console.log("mySaveFunction");
+	// deleteOldRows();
 	saveArray=[];
-	sendSaveName ()
-	deleteRows();
+	sendSaveName (true)
+	
 	for(j=0;j<rowCount;j++) {
 	//set save row for each step of loop from 0 to rowCount
 		let saveRow=(tabBody.children[j])
@@ -262,7 +296,7 @@ function putData (saveArray) {
 
 function myLoadFunction () {
 	
-	sendSaveName ()
+	sendSaveName (false)
 	// console.log("loading: ", saveName.name);
 	// do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/')
@@ -282,6 +316,7 @@ function myLoadFunction () {
 
 function deleteOldRows () {
 	// set startRowCount variable to initial rowCount
+	console.log("deleteOldRows");
 	let startRowCount=rowCount;
 	// loop through rows backwards except first row
 	for(l=startRowCount-1;l>0;l--){
@@ -422,7 +457,7 @@ function deleteRows () {
 
 
 function tablesListGet () {
-	console.log("loading tablesList");
+	// console.log("loading tablesList");
 	// do a GET request to get data from DB. GET request is managed by server.js	
 	fetch ('http://localhost:3000/tableName')
 	//return reponse from DB as JSON

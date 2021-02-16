@@ -107,7 +107,7 @@ app.post('/',(req,res)=>{
 	console.log(newTable);
 	// res.send(newTable);
 	db.schema.createTable(newTable, function(table) {
-	 	table.increments('No');
+	 	table.integer('No');
 	 	table.string('Type')
 	 	table.string('Tool');
 	 	table.decimal('OD');
@@ -127,7 +127,7 @@ app.post('/',(req,res)=>{
 
 //deletes rows from database, used when new saveFunction called
 app.delete('/',(req,res)=>{
-console.log("deleting: ", saveName.name);
+console.log("deleting saveName: ", saveName.name);
 	db(saveName.name)	 	
 		 .del()
 		.then(response => {
