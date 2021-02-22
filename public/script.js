@@ -409,7 +409,7 @@ function clearVals (newRow) {
 }
 
 function switchFunc (selectedType) {
-// returns index for tool type given in JSON
+	// returns index for tool type given in JSON
 	switch (selectedType) {
 
 		case "DC":
@@ -444,9 +444,9 @@ function switchFunc (selectedType) {
 
 //	
 function deleteRows () {
-//deletes rows from database, used when new saveFunction called
+	//deletes rows from database, used when new saveFunction called
 	// sendSaveName ()
-	fetch ('http://localhost:3000/'
+	fetch ('http://localhost:3000/deleteRows'
 		, {
 		method: 'DELETE',
 	})
@@ -478,17 +478,47 @@ function tablesListCreate (tablesList) {
 	console.log(tableCount);
 	
 	for (i=0;i<tableCount;i++){
-		console.log(tablesList[i].tablename);
-		let savesList = document.getElementById("saves");
-		let newOption = document.createElement("option");
+		let tableName=tablesList[i].tablename
+			console.log(tableName);
 
-
-		savesList.appendChild(newOption);
-		newOption.id=(tablesList[i].tablename);
-		newOption.textContent=(tablesList[i].tablename);
+		let isDeleted=tableName.startsWith("del_")
+		if  (isDeleted){
+			console.log(tableName," is a deleted file")
+		} else {
+			let savesList = document.getElementById("saves");
+			let newOption = document.createElement("option");
+			savesList.appendChild(newOption);
+			newOption.id=(tablesList[i].tablename);
+			newOption.textContent=(tablesList[i].tablename);
+		}
 	}
 
 }
+
+
+function dropTable () {
+	fetch ('http://localhost:3000/dropTable'
+		, {
+		method: 'DELETE',
+	})
+	.then(response => console.log(response));
+
+}
+
+
+function delName () {
+
+	let saveInputVal=document.getElementById("saveInput").value;
+
+	console.log("renaming table to: del_", saveInputVal)
+	fetch ('http://localhost:3000/rename?name='+ saveInputVal)
+		
+	
+	.then(response => response.json())
+	.then(log =>{
+		console.log('success: ', log)
+	})
+	}
 
 
 function createInput (thisx,selectedIndex) {

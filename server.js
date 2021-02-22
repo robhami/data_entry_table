@@ -31,17 +31,24 @@ const db  = knex({
   }
 });
 
+
 // console.log("DBX", db.select('*').from('bhainput'));
 
 let saveName = {"name" : "bhainput"};
+let count=0;
+
 //pulls data from database
 app.get('/' ,(req, res)=>{
 	console.log("loading ", saveName.name)
-	db.select('*').from(saveName.name).then(function(data) {
-
+	db.select('*').from(saveName.name)
+	.then(function(data) {
 		res.send(data);
 		// let saveData=res.send(data);
-	});
+	})
+	.catch (error=> {
+		// res.status(500).json({error: err});
+		console.error('Error:', error);
+	})
 	
 	// res.send("hello");
 	
@@ -52,9 +59,10 @@ app.get('/' ,(req, res)=>{
 app.get('/tableName' ,(req, res)=>{
 		
 	db('pg_catalog.pg_tables')
+
 	.select('tablename')
 	.where({schemaname:'public'})
-
+	
 	.then(function(data) {
 		res.send(data);
 	});
@@ -74,7 +82,8 @@ app.put('/saveName', (req, res)=>{
 //add new data to existing table, need to make table name dynamic
 app.put('/',(req,res)=>{
 	
-	// console.log("rowCount", rowCount);
+	
+	console.log("count: ",count);
 	const newRows=req.body;
 	console.log("below row added to table ",saveName.name,req.body);
 	// console.log("req params",req.params);
@@ -83,6 +92,7 @@ app.put('/',(req,res)=>{
 	 	
 		.returning('*')
 		.insert({
+			// id: ,
 			No: newRows.No,	
 			Type: newRows.Type,
 			Tool: newRows.Tool,
@@ -98,6 +108,7 @@ app.put('/',(req,res)=>{
 	.catch((error) => {
 	  		console.error('Error:', error);
 	});
+	count++;
 })
 
 //create new table, need function is script.js to send req.body.name
@@ -107,6 +118,7 @@ app.post('/',(req,res)=>{
 	console.log(newTable);
 	// res.send(newTable);
 	db.schema.createTable(newTable, function(table) {
+		table.increments('id');
 	 	table.integer('No');
 	 	table.string('Type')
 	 	table.string('Tool');
@@ -126,7 +138,7 @@ app.post('/',(req,res)=>{
 })
 
 //deletes rows from database, used when new saveFunction called
-app.delete('/',(req,res)=>{
+app.delete('/deleteRows',(req,res)=>{
 console.log("deleting saveName: ", saveName.name);
 	db(saveName.name)	 	
 		 .del()
@@ -135,6 +147,35 @@ console.log("deleting saveName: ", saveName.name);
 		})
 
 	})
+
+app.delete('/dropTable',(req,res)=>{
+	console.log("dropping table: ", saveName.name);
+	
+	
+
+// only deletes rows need to find a way to hide or fully delete
+
+	db.schema.dropTable(saveName.name)
+
+	// console.log("renaming table: ", saveName.name);
+	// db.schema.renameTable('new save 6', 'deleted')
+	// console.log("now called", saveName.name)
+
+})
+
+app.get('/rename',(req,res) => {
+	// const {name}=req.params('name');
+	// res.send(req.query)
+	console.log(req.query.name)
+	let delName=('del_'+req.query.name)
+	console.log(delName)
+	db.schema.renameTable(req.query.name,delName)
+	// console.log({name})
+	// res.json(name)
+	.then(response => {
+			res.json(response)
+		})
+})
 
 app.listen(3000, ()=>{
 	console.log('app is running on port 3000');
