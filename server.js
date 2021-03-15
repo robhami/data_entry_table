@@ -81,7 +81,7 @@ app.put('/saveName', (req, res)=>{
 
 //add new data to existing table, need to make table name dynamic
 app.put('/',(req,res)=>{
-	
+console.log("put adding data to existing table")	
 	
 	console.log("count: ",count);
 	const newRows=req.body;
@@ -115,7 +115,7 @@ app.put('/',(req,res)=>{
 app.post('/',(req,res)=>{
 	
 	let newTable=req.body.name;
-	console.log(newTable);
+	console.log("creating new table: ", newTable);
 	// res.send(newTable);
 	db.schema.createTable(newTable, function(table) {
 		table.increments('id');
@@ -130,8 +130,8 @@ app.post('/',(req,res)=>{
 	 })
 
 	.then(function(data) {
-
-		res.send(data);
+		res.json({success: true, message: 'ok'});
+		// res.send(data);
 		// let saveData=res.send(data);
 	});
 

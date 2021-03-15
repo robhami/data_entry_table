@@ -60,10 +60,6 @@
 				 
 			    </tr>
 
-
-
-
-
 			  </thead>
 
 			  <tbody id="tabBody">
@@ -122,28 +118,23 @@
 					<div class="input-group-prepend" id="saveBar">
 						<button type="button" class="btn btn-primary btn" onClick="myLoadFunction()" id="calcButt">Load</button>
 					</div>
-					<!-- <select class="custom-select" id="inputGroupSelect04" onchange="createInput(this,this.selectedIndex)"> -->
+					
 							<input type="text" list="saves" id="saveInput" onfocus="this.value=''" onchange="this.blur();" placeholder="Enter save name or select below:" autocomplete="off" method="get">
 							<datalist id="saves">
-								<!-- <option selected>Choose...</option> -->
-								<!-- <option>Example One</option>
-								<option >Example Two</option>
-								<option >Example Three</option> -->
-								<!-- <option disabled>------------</option>
-								<option  id="saveOption">New Save File</option> -->
+								
 							</datalist>
-					<!-- </select> -->
+				
 					
 					<div class="input-group-append">
 						<button type="submit" class="btn btn-success btn" onClick="mySaveFunction()" id="savButt">Save</button>
-						<button type="submit" class="btn btn-danger btn" onClick="deleteRows()" id="delTabButt">Delete</button>
+						<button type="submit" class="btn btn-danger btn" onClick="delName()" id="delTabButt">Delete</button>
 					</div>
 				</div>
 
 			
 		</div>	
 
-			
+<!-- <p id="rowCountDisplay"></p>	 -->		
 			
 </div>
 			

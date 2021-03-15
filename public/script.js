@@ -8,14 +8,10 @@ let saveArray=[];
 // let loadData={};
 let selectIndex="";
 // let loadRows="";
+//populates the saved games dropdown
 tablesListGet ()
 
-
-
-// fetch('http://localhost:3000/')
-// .then(response => response.json())
-// .then(data => console.log(data))
-
+// sets the value to selected DD value etc
 function DD (selectIndex, selectId) {
 
 	// console.log("selectId: ", selectId);
@@ -36,7 +32,7 @@ function DD (selectIndex, selectId) {
 	// console.log(selectRow.parentElement);
 }
 
-
+// takes value entered and sets value to cell element
 function input (valuex,idx) {
 //logs value and id of cell that is changed
 	console.log(valuex,idx);	
@@ -49,6 +45,7 @@ function input (valuex,idx) {
 	cell.children[0].setAttribute("value", valuex);
 	console.log(cell);
 }
+
 
 function addRow() {	
 
@@ -83,13 +80,23 @@ function addRow() {
 	// append new row to table & increase row count 
 	tabBody.appendChild(newRow);
 	rowCount++;
-
+	document.body.appendChild(document.createTextNode(rowCount))
 	
 	// change row # text and value based on increased row count
 	// console.log(newRow.children[0]);
 	newRow.children[0].textContent=rowCount;
 	newRow.children[0].setAttribute("value",rowCount);
 	// console.log(newRow.children[0].dataset.value);
+}
+
+function clearVals (newRow) {
+	// console.log("clearVals", newRow)
+	// can do this at start addRow
+	for(i=3;i<7;i++){
+		// console.log(newRow.children[i]);
+		newRow.children[i].setAttribute("value",0);
+		newRow.children[i].children[0].setAttribute("value",0);
+	}
 }
 
 function myDeleteFunction(rowDelButt) {	
@@ -101,6 +108,7 @@ function myDeleteFunction(rowDelButt) {
 		// console.log(rowDelButt.parentElement.parentElement);
 		rowDelButt.parentElement.parentElement.remove();
 		rowCount--;
+
 		// console.log("row count del func end: ",rowCount);
 	}
 }
@@ -136,97 +144,12 @@ function sendSaveName (isSave) {
 
 
 
-function savesExist (saveSelect, saveJSON) {
-	// console.log(saveSelect);
-	// set saveExistCheck to false to show no match 
-	let saveExistCheck= false;
-	// while no match for save input run function to loop through saves list
-	// (!saveExistCheck) {
-	// set saveExist value based on function 
-	saveExistCheck=saveLoopList (saveSelect);
-	console.log("true: ", saveExistCheck)
-		
-	//check if saveLoopList has found a match
-	if (saveExistCheck){
-	console.log("exists")
-		if(confirm(saveSelect + " already exists overwrite it?")){
-			console.log("Proceeding to save");
-			deleteRows();
-		} else {
-			throw(alert("Please select save name. Not Saved"));				
-		}
-	} 
-	else {
-	console.log("doesn't exist")
-
-	if(confirm(saveSelect + " does not exist create new save file?")){
-			console.log("Proceeding to save");
-			newSaveFile();
-		//added
-			async function newSaveFile () {
-				const response =createNewSaveFile (saveSelect, saveJSON);
-				const data = await response;
-				console.log("data async",data);
-			}
-		} else {
-			throw(alert("Please select save name. Not Saved"));			
-		}
-	}	
-}
-
-
-function saveLoopList (saveSelect) {
-	let savesLength=saves.children.length;
-	// console.log(savesLength);
-	// console.log("saveSelect: ", saveSelect);
-	
-		for(x=0;x<savesLength;x++){
-				// console.log("x: ", x);
-				// console.log("test against: ", saves.children[x].value);
-				if(saves.children[x].value===saveSelect) {
-					console.log(saveSelect," already exists overwrite it?");				
-						return (true)
-				} 
-		}
-		
-}
-
-
-// need to create new save file
-async function   createNewSaveFile (saveSelect, saveJSON) {
- 	console.log ("creating new save file: ", saveSelect, saveJSON)
- 
- 	const settings =
- 			{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: 
-				JSON.stringify(
-					saveJSON
-				)
-
-	};
-	// not sure I need this to be async await but left it there. 
-	//I think the async await in saveExists is making sure table created before proceeding
-			try {
-        		const fetchResponse = await fetch('http://localhost:3000/', settings);
-        		const data = await fetchResponse.json();
-        		return("awaited", data);
-    		}
-
-			catch(error) {
-		  		console.error('Error:', error);
-			}
-}
-
-
-
+//WHEN HIT SAVE BUTTON
 function mySaveFunction () {
 	console.log("mySaveFunction");
-	// deleteOldRows();
+	//clear any existing data in saveArray
 	saveArray=[];
+	// send saveName to server 
 	sendSaveName (true)
 	
 	for(j=0;j<rowCount;j++) {
@@ -258,11 +181,130 @@ function mySaveFunction () {
 	
 	console.log("SaveArray",saveArray);
 	// sends sendArray to putData function to allow saving to DB
-	putData(saveArray);
+	//THIS NEEDS TO WAIT ON TABLE
+	// putData(saveArray);
 }
 
+function sendSaveName (isSave) {
+
+	console.log("isSave: ", isSave)
+	let saveSelect =document.getElementById('saveInput').value;
+	console.log("saves: ", saveSelect);
+	let saveJSON= {"name" : saveSelect}
+	console.log("saveJson: ",saveJSON)
+	
+	if(isSave) {
+		savesExist(saveSelect, saveJSON)
+	}
+	
+	fetch ('http://localhost:3000/saveName'
+		,{
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(
+				saveJSON
+				)
+			})
+			.then(response => response.json())
+			.then(saveNamex => {
+		  		console.log('Success:', saveNamex);
+			})
+			.catch((error) => {
+		  		console.error('Error:', error);
+			});
+}
+
+function savesExist (saveSelect, saveJSON) {
+
+	// set saveExistCheck to false to show no match 
+	let saveExistCheck= false;
+	
+	// set saveExist value based on function saveLoopList
+	saveExistCheck=saveLoopList (saveSelect);
+	console.log("true: ", saveExistCheck)
+		
+	//check if saveLoopList has found a match
+	if (saveExistCheck){
+	console.log("exists")
+		if(confirm(saveSelect + " already exists overwrite it?")){
+			console.log("Proceeding to save");
+			deleteRows();
+			putData(saveArray)
+		} else {
+			throw(alert("Please select save name. Not Saved"));				
+		}
+	} 
+	else {
+	console.log("doesn't exist")
+
+	if(confirm(saveSelect + " does not exist create new save file?")){
+			console.log("Proceeding to save");
+			newSaveFile();
+	
+			async function newSaveFile () {
+				const response =createNewSaveFile (saveSelect, saveJSON);
+				const data = await response;
+				console.log("data async",data);
+			}
+
+			
+
+		} else {
+			throw(alert("Please select save name. Not Saved"));			
+		}
+	}	
+}
+
+async function   createNewSaveFile (saveSelect, saveJSON) {
+ 	console.log ("creating new save file: ", saveSelect, saveJSON)
+ 
+ 	const settings =
+ 			{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: 
+				JSON.stringify(
+					saveJSON
+				)
+
+	};
+	// not sure I need this to be async await but left it there. 
+	//I think the async await in saveExists is making sure table created before proceeding
+			try {
+        		const fetchResponse = await fetch('http://localhost:3000/', settings);
+        		const data = await fetchResponse.json();
+        		console.log("awaited",data)
+        		putData(saveArray)
+        		return("awaited", data);
+    		}
+
+			catch(error) {
+		  		console.error('Error:', error);
+			}
+}
+
+function saveLoopList (saveSelect) {
+	let savesLength=saves.children.length;
+	// console.log(savesLength);
+	// console.log("saveSelect: ", saveSelect);
+	
+		for(x=0;x<savesLength;x++){
+				// console.log("x: ", x);
+				// console.log("test against: ", saves.children[x].value);
+				if(saves.children[x].value===saveSelect) {
+					console.log(saveSelect," already exists overwrite it?");				
+						return (true)
+				} 
+		}
+		
+}
 
 function putData (saveArray) {
+	console.log("putData function");
 	console.log("rowCount: ",rowCount);
 
 	//loop thru saveArray doing a PUT request that is managed by server.js
@@ -398,15 +440,7 @@ function loadNum (loadData,loadRows) {
 	}
 }
 
-function clearVals (newRow) {
-	// console.log("clearVals", newRow)
-	// can do this at start addRow
-	for(i=3;i<7;i++){
-		// console.log(newRow.children[i]);
-		newRow.children[i].setAttribute("value",0);
-		newRow.children[i].children[0].setAttribute("value",0);
-	}
-}
+
 
 function switchFunc (selectedType) {
 	// returns index for tool type given in JSON
@@ -479,11 +513,11 @@ function tablesListCreate (tablesList) {
 	
 	for (i=0;i<tableCount;i++){
 		let tableName=tablesList[i].tablename
-			console.log(tableName);
+			// console.log(tableName);
 
 		let isDeleted=tableName.startsWith("del_")
 		if  (isDeleted){
-			console.log(tableName," is a deleted file")
+			// console.log(tableName," is a deleted file")
 		} else {
 			let savesList = document.getElementById("saves");
 			let newOption = document.createElement("option");
@@ -495,6 +529,13 @@ function tablesListCreate (tablesList) {
 
 }
 
+function tablesListClear () {
+ let savesToDel=document.getElementById("saves")
+	while(savesToDel.hasChildNodes()){
+		savesToDel.removeChild(savesToDel.childNodes[0])
+		// console.log(savesToDel.hasChildNodes);
+	}
+}
 
 function dropTable () {
 	fetch ('http://localhost:3000/dropTable'
@@ -516,9 +557,12 @@ function delName () {
 	
 	.then(response => response.json())
 	.then(log =>{
-		console.log('success: ', log)
+		console.log('delName success: ', log)
 	})
-	}
+	document.getElementById('saveInput').value="";
+	tablesListClear()
+	tablesListGet ()
+}
 
 
 function createInput (thisx,selectedIndex) {
