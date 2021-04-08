@@ -85,6 +85,7 @@ console.log("put adding data to existing table")
 	
 	console.log("count: ",count);
 	const newRows=req.body;
+	console.log(newRows)
 	console.log("below row added to table ",saveName.name,req.body);
 	// console.log("req params",req.params);
 	// console.log("above data added to this table: ",saveName.name);

@@ -146,11 +146,11 @@ function sendSaveName (isSave) {
 
 //WHEN HIT SAVE BUTTON
 function mySaveFunction () {
-	console.log("mySaveFunction");
+	console.log("FUNCTION mySaveFunction");
 	//clear any existing data in saveArray
 	saveArray=[];
 	// send saveName to server 
-	sendSaveName (true)
+	
 	
 	for(j=0;j<rowCount;j++) {
 	//set save row for each step of loop from 0 to rowCount
@@ -183,20 +183,18 @@ function mySaveFunction () {
 	// sends sendArray to putData function to allow saving to DB
 	//THIS NEEDS TO WAIT ON TABLE
 	// putData(saveArray);
+	sendSaveName (true)
 }
 
 function sendSaveName (isSave) {
-
+	console.log("FUNCTION sendSaveName");
 	console.log("isSave: ", isSave)
 	let saveSelect =document.getElementById('saveInput').value;
-	console.log("saves: ", saveSelect);
+	console.log("saveSelect: ", saveSelect);
 	let saveJSON= {"name" : saveSelect}
 	console.log("saveJson: ",saveJSON)
 	
-	if(isSave) {
-		savesExist(saveSelect, saveJSON)
-	}
-	
+
 	fetch ('http://localhost:3000/saveName'
 		,{
 			method: 'PUT',
@@ -209,15 +207,27 @@ function sendSaveName (isSave) {
 			})
 			.then(response => response.json())
 			.then(saveNamex => {
-		  		console.log('Success:', saveNamex);
+		  		console.log('Success sandSaveName:', saveNamex);
 			})
 			.catch((error) => {
 		  		console.error('Error:', error);
 			});
+
+	if(saveSelect){
+		// not sure why we need to test if true
+		if(isSave) {
+			savesExist(saveSelect, saveJSON)
+		}
+	} else {
+		throw(alert("False value entered please enter or select save name"))
+	}
+
+	//send the the save name in JSON to the server
+
 }
 
 function savesExist (saveSelect, saveJSON) {
-
+	console.log("FUNCTION savesExist");
 	// set saveExistCheck to false to show no match 
 	let saveExistCheck= false;
 	
@@ -231,7 +241,9 @@ function savesExist (saveSelect, saveJSON) {
 		if(confirm(saveSelect + " already exists overwrite it?")){
 			console.log("Proceeding to save");
 			deleteRows();
+			console.log(saveArray);
 			putData(saveArray)
+
 		} else {
 			throw(alert("Please select save name. Not Saved"));				
 		}
@@ -325,7 +337,7 @@ function putData (saveArray) {
 			})
 			.then(response => response.json())
 			.then(json => {
-		  		console.log('Success:', json);
+		  		console.log('Success putData:', json);
 			})
 			.catch((error) => {
 		  		console.error('Error:', error);
