@@ -5,8 +5,8 @@ let saveObject={};
 let saveArray=[];
 // let saveJSON={1:1};
 // let myJSON="";
-// let loadData={};
-let selectIndex="";
+let loadData={};
+let selectIndex="DC";
 // let loadRows="";
 //populates the saved games dropdown
 tablesListGet ()
@@ -14,15 +14,17 @@ tablesListGet ()
 // sets the value to selected DD value etc
 function DD (selectIndex, selectId) {
 
-	// console.log("selectId: ", selectId);
-	// console.log("selectIndex: ", selectIndex);
+	console.log("selectId: ", selectId);
+	console.log("selectIndex: ", selectIndex);
 	// set variable for the select element being processed
 	let selectRow=(document.getElementById(selectId));
 	// console.log("selectRow:", selectRow);
 	//set variable for the select option element being processed
 	let selectOption=selectRow.children[selectIndex];	
-	// console.log("selected option: ",selectOption);
-	// console.log(selectRow.value);
+	console.log("selected option: ",selectOption);
+	console.log(selectRow.value);
+	//set variable with value selected in Type cell
+	let toolValue=selectRow.value
 	// sets the select element value to loaded or selected value
 	selectRow.parentElement.setAttribute('value',selectOption.value);
 	// sets select element to selected index(i.e. visible) to correct value, 
@@ -30,7 +32,116 @@ function DD (selectIndex, selectId) {
 	selectRow.selectedIndex=selectIndex;
 	// console.log(selectRow.selectedIndex);
 	// console.log(selectRow.parentElement);
+	// console.log(tool.children[0].childElementCount)
+	// variable to identify if Tool Column for toolListGet function to send to correct subsequent function
+	let toolCol= false;
+	// if id selected is typeSelect (i.e. its type column)
+	if(selectId.startsWith("typeSelect")){
+	// variable that identifies cell of Tool Column is selected and needs to be populated
+		let toolElement=document.getElementById(selectId).parentElement.parentElement.children[2].children[0]
+		console.log("toolElement", toolElement)
+	//send toolElement (cell to change), tool value (value selected in Type cell), 
+	// and toolCol (whether its Type or Tool cell that is selected)
+		toolsListGet(toolElement, toolValue, toolCol)
+	}
+
+	if(selectId.startsWith("toolDD")){
+	//set toolCol to true, to show that tool column is selected
+		toolCol=true;
+	// variable that identifies cell of Tool Column selected, 
+	//this will be used as a locator in toolDataExtract function
+		let toolElement=document.getElementById(selectId).parentElement.parentElement.children[2].children[0]
+	// get the value of the Type cell
+		toolValue=document.getElementById(selectId).parentElement.parentElement.children[1].children[0].value
+		console.log("toolElement", toolElement)
+		console.log("toolValue", toolValue)
+	//send toolElement (cell selected where data read from), tool value (value selected in Type cell), 
+	// and toolCol (whether its Type or Tool cell that is selected)
+		toolsListGet(toolElement, toolValue, toolCol)
+		// toolDataAdd (toolValue)
+	}
+
+
+
 }
+
+function toolsListGet (toolElement, toolValue, toolCol) {
+
+	console.log("toolCol: ", toolCol)
+	console.log("toolValue: ",toolValue)
+	// console.log("loading tablesList");
+	// do a GET request to get data from DB. GET request is managed by server.js	
+	fetch ('http://localhost:3000/toolType?name='+ toolValue)
+	//return reponse from DB as JSON
+		.then(response => response.json())
+		.then(toolsList => {
+	  		// console.log('Success GET tool list:', toolsList);
+	 //if its Type column send toolList (data to add) & toolElement (element to change) to toolsListCreate
+	  	if(!toolCol) {
+	  		console.log("false if worked")
+			toolsListCreate (toolsList, toolElement)
+	//if its Tool column send toolList (data to use) & toolElement (locator for row) to toolDataExtract
+	  	} else if(toolCol) {
+	  		console.log("need a function for Tool data extraction")
+	  		toolDataExtract(toolsList, toolElement)
+	  	}
+		})
+
+		.catch((error) => {
+	  		console.error('Error:', error);
+		});
+}
+
+function toolsListCreate (toolsList,toolElement) {
+	console.log("toolElement: ", toolElement)
+	console.log(toolsList.length)
+	let toolCount=toolsList.length;
+	// loop through toolsList appending it to Tool dropdown in selected row
+	for(i=0;i<toolCount;i++){
+		let option =document.createElement("option")
+		option.text=toolsList[i].Tool;
+		option.value=toolsList[i].Tool;
+		// console.log(option)
+		// console.log(toolsList[i])
+		toolElement.appendChild(option)
+	}
+
+}
+
+
+
+function toolDataExtract (toolsList, toolElement) {
+	console.log("toolElement: ", toolElement)
+	console.log(toolsList.length)
+	let toolCount=toolsList.length;
+	console.log(toolsList);
+	for(i=0;i<toolCount;i++){
+		
+	}
+
+}
+
+// function toolDataAdd (toolValue) {
+// 	console.log("Tool data addx");
+
+// 	fetch ('http://localhost:3000/toolData?name='+ toolValue)
+// 		//return reponse from DB as JSON
+// 			.then(response => response.json())
+// 			.then(toolsList => {
+// 		  		console.log('Success GET tool list:', toolsList);
+// 				// toolsListCreate (toolsList, toolElement)
+// 			})
+
+// 			.catch((error) => {
+// 		  		console.error('Error:', error);
+// 			});
+	
+
+// }
+
+
+
+
 
 // takes value entered and sets value to cell element
 function input (valuex,idx) {
@@ -90,12 +201,18 @@ function addRow() {
 }
 
 function clearVals (newRow) {
-	// console.log("clearVals", newRow)
+	console.log("clearVals", newRow)
 	// can do this at start addRow
 	for(i=3;i<7;i++){
 		// console.log(newRow.children[i]);
 		newRow.children[i].setAttribute("value",0);
 		newRow.children[i].children[0].setAttribute("value",0);
+	}
+	let selectTool=newRow.children[2].children[0]
+	let childCount=selectTool.childElementCount
+	//loop through select element deleting all added values
+	for(j=childCount;j>0;j--){
+		selectTool.remove(j)
 	}
 }
 
@@ -149,7 +266,7 @@ function mySaveFunction () {
 	console.log("FUNCTION mySaveFunction");
 	//clear any existing data in saveArray
 	saveArray=[];
-	// send saveName to server 
+	// send saveName to server ??????
 	
 	
 	for(j=0;j<rowCount;j++) {
@@ -417,6 +534,7 @@ function loadDD (loadData,loadRows) {
 		// loops through added rows & loadData for tool type column
 		// then sends to DD function to set loaded values
 		// gets the select element from table
+			console.log("k: ", k);
 			let selectId =tabBody.children[k].children[1].children[0];
 			console.log("selectId: ", selectId);
 		//gets the tool type for dropdown from JSON
@@ -455,6 +573,7 @@ function loadNum (loadData,loadRows) {
 
 
 function switchFunc (selectedType) {
+	console.log("SwithchFunc");
 	// returns index for tool type given in JSON
 	switch (selectedType) {
 
@@ -485,6 +604,7 @@ function switchFunc (selectedType) {
 		case "Sub_XO":
 		selectIndex=6;
 	}
+	console.log("selectIndex: ", selectIndex)
 }
 	
 
@@ -522,7 +642,7 @@ function tablesListCreate (tablesList) {
 	console.log('Success GET tableListCreate:', tablesList);
 	let tableCount=tablesList.length;
 	console.log(tableCount);
-	
+	// loop through tablesList and append to savesList if not del prefix
 	for (i=0;i<tableCount;i++){
 		let tableName=tablesList[i].tablename
 			// console.log(tableName);

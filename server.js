@@ -31,6 +31,17 @@ const db  = knex({
   }
 });
 
+const dbTool =knex({
+  	client: 'pg',
+  	connection: {
+    host : '127.0.0.1',
+    user : 'postgres',
+    password : 'Ham&1974',
+    database : 'Tooldata'
+  }
+});
+
+
 
 // console.log("DBX", db.select('*').from('bhainput'));
 
@@ -68,6 +79,19 @@ app.get('/tableName' ,(req, res)=>{
 	});
 });
 
+//get list of tooltypes
+app.get('/toolType' ,(req, res)=>{
+	console.log(req.query.name)	
+	let toolTable=req.query.name;
+	dbTool('pg_catalog.pg_tables')
+
+	.select('Tool').from(toolTable)
+	
+	
+	.then(function(data) {
+		res.send(data);
+	});
+});
 
 
 //update variable saveName
@@ -138,7 +162,7 @@ app.post('/',(req,res)=>{
 
 })
 
-//deletes rows from database, used when new saveFunction called
+//deletes rows from database, also used when new saveFunction called
 app.delete('/deleteRows',(req,res)=>{
 console.log("deleting saveName: ", saveName.name);
 	db(saveName.name)	 	
@@ -151,10 +175,7 @@ console.log("deleting saveName: ", saveName.name);
 
 app.delete('/dropTable',(req,res)=>{
 	console.log("dropping table: ", saveName.name);
-	
-	
-
-// only deletes rows need to find a way to hide or fully delete
+// only deletes rows need to find a way to hide or fully delete table- done with del prefix
 
 	db.schema.dropTable(saveName.name)
 
@@ -164,10 +185,12 @@ app.delete('/dropTable',(req,res)=>{
 
 })
 
+// to rename table with del prefix
 app.get('/rename',(req,res) => {
 	// const {name}=req.params('name');
 	// res.send(req.query)
 	console.log(req.query.name)
+	// add del prefix and rename table
 	let delName=('del_'+req.query.name)
 	console.log(delName)
 	db.schema.renameTable(req.query.name,delName)
