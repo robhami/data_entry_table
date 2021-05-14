@@ -83,6 +83,20 @@ app.get('/tableName' ,(req, res)=>{
 app.get('/toolType' ,(req, res)=>{
 	console.log(req.query.name)	
 	let toolTable=req.query.name;
+	dbTool
+	// ('pg_catalog.pg_tables')
+
+	.select('*').from(toolTable)
+	
+	
+	.then(function(data) {
+		res.send(data);
+	});
+});
+
+app.get('/toolData' ,(req, res)=>{
+	console.log(req.query.name)	
+	let toolTable=req.query.name;
 	dbTool('pg_catalog.pg_tables')
 
 	.select('Tool').from(toolTable)
