@@ -67,8 +67,8 @@
 				  <tr id="dataRow">
 				    <td class="num" id="num" value=1>1</td>
 				    <td class="select" id="typeTd" value="xc">
-				    	<select id="typeSelect" onchange="DD(this.selectedIndex, this.id)">
-				    			<option value=""selected="true">Tool Type</option>
+				    	<select id="typeSelect" onchange="DD(this.selectedIndex, this.id)" >
+				    			<option value=""selected="true" disabled>Tool Type</option>
 				    			<option value="DC">DC</option>
 				    			<option value="HWDP">HWDP</option>
 				    			<option value="DP">DP</option>
@@ -79,8 +79,8 @@
 				    	</select>
 				    </td>
 				    <td class="select" id="tool" value="tool">
-						<select id="toolDD" value="tool" onchange="DD(this.selectedIndex, this.id)" required>
-				    			<option value="pend">Select Tool</option>
+						<select id="toolDD" value="tool" onchange="DD(this.selectedIndex, this.id)" required >
+				    			<option value="pend" disabled selected="true" >Select Tool</option>
 				    	</select>
 					</td>
 				    
@@ -102,7 +102,7 @@
 
 				   		<td>
 						
-				   		<button type="button" onClick="myDeleteFunction(this)" id="moveButt"><a id="moveButtText">↑</a></button>
+				   		<button type="button" onClick="moveRowsUp(this)" id="moveButt"><a id="moveButtText">↑</a></button>
 				   		<button type="button" onClick="myDeleteFunction(this)" id="moveButt"><a id="moveButtText">↓</a></button>
 				   		
 				   	</td>

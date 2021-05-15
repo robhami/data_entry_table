@@ -6,86 +6,117 @@ let saveArray=[];
 // let saveJSON={1:1};
 // let myJSON="";
 let loadData={};
-let selectIndex="";
+let typeIndex="";
 // let loadRows="";
 //populates the saved games dropdown
 tablesListGet ()
 
-// sets the value to selected DD value etc
-function DD (selectIndex, selectId) {
 
-	console.log("selectId: ", selectId);
-	console.log("selectIndex: ", selectIndex);
-	// set variable for the select element being processed
-	let selectRow=(document.getElementById(selectId));
+function DD (typeIndex, elemUpdate, loadTool) {
+	// sets the value to selected or loaded DD value
+	console.log("elemUpdate: ", elemUpdate);
+	console.log("typeIndex: ", typeIndex);
+	console.log("loadTool: ", loadTool);
+
+	// set variable for the type element being processed
+	let selectRow=document.getElementById(elemUpdate);
 	console.log("selectRow:", selectRow);
+	
+	//set typeValue to null to allow assignment in if functions below
+	let typeValue 
+	//a typeIndex is only possible for type column, so check typeIndex not false
+	
+	if(typeIndex!=false) {
 	//set variable for the select option element being processed
-	let selectOption=selectRow.children[selectIndex];	
-	console.log("selected option: ",selectOption);
-	console.log(selectRow.value);
-	//set variable with value selected in Type cell
-	let toolValue=selectOption.value
-	console.log("TOOLVA: ", toolValue)
-	// sets the select element value to loaded or selected value
-	selectRow.parentElement.setAttribute('value',selectOption.value);
-	// sets select element to selected index(i.e. visible) to correct value, 
+	//*****there may be a better way to do this by using loadTool for both	
+		let selectOption=selectRow.children[typeIndex];	
+		console.log("selected option: ",selectOption);
+		
+	//set variable with value selected or to be loaded in Type cell
+		typeValue=selectOption.value
+		console.log("TYPEVA: ", typeValue)
+	
+	//changes type cell value to loaded or selected typeValue
+		selectRow.parentElement.setAttribute('value', typeValue);
+	//changes type cell to type index(i.e. visible) to correct value, 
 	//this had to be done to use load data
-	selectRow.selectedIndex=selectIndex;
-	// console.log(selectRow.selectedIndex);
+		selectRow.selectedIndex=typeIndex;
+		console.log(selectRow.selectedIndex);
+	} 
+	
 	// console.log(selectRow.parentElement);
 	// console.log(tool.children[0].childElementCount)
+
 	// variable to identify if Tool Column for toolListGet function to send to correct subsequent function
 	let toolCol= false;
 	// if id selected is typeSelect (i.e. its type column)
-	if(selectId.startsWith("typeSelect")){
+	if (elemUpdate.startsWith("typeSelect")){
 	// variable that identifies cell of Tool Column is selected and needs to be populated
-		let toolElement=document.getElementById(selectId).parentElement.parentElement.children[2].children[0]
-		console.log("toolElement", toolElement)
+		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
+		// console.log("toolElement", toolElement)
 	//send toolElement (cell to change), tool value (value selected in Type cell), 
 	// and toolCol (whether its Type or Tool cell that is selected)
-		toolsListGet(toolElement, toolValue, toolCol)
+		toolsListGet(toolElement, typeValue, toolCol)
 	}
 
-	if(selectId.startsWith("toolDD")){
+	if (elemUpdate.startsWith("toolDD")){
+	
 	//set toolCol to true, to show that tool column is selected
 		toolCol=true;
-	// variable that identifies cell of Tool Column selected, 
+	
+	//get variable that identifies cell of Tool Column selected, 
 	//this will be used as a locator in toolDataExtract function
-		let toolElement=document.getElementById(selectId).parentElement.parentElement.children[2].children[0]
-	// get the value of the Type cell
-		toolValue=document.getElementById(selectId).parentElement.parentElement.children[1].children[0].value
+	//if this is loaded it has no value as list is loaded with nothing selected 
+	//need to do a if for loaded data could use typeIndex false 
+
+
+		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
+	
+	// get the value of the Type cell to allow correct toolList to be pulled
+		typeValue=document.getElementById(elemUpdate).parentElement.parentElement.children[1].children[0].value
+		
 		console.log("toolElement", toolElement)
-		console.log("toolValue", toolValue)
+		console.log("typeValue", typeValue)
+		console.log("loadTool: ", loadTool)
+		
 	//send toolElement (cell selected where data read from), tool value (value selected in Type cell), 
 	// and toolCol (whether its Type or Tool cell that is selected)
-		toolsListGet(toolElement, toolValue, toolCol)
-		// toolDataAdd (toolValue)
+		toolsListGet(toolElement, typeValue, toolCol, loadTool, typeIndex)
+		// toolDataAdd (typeValue)
 	}
 
 
 
 }
 
-function toolsListGet (toolElement, toolValue, toolCol) {
-//populates Type and Tool columns 
+function toolsListGet (toolElement, typeValue, toolCol, loadTool, typeIndex) {
+	console.log("TOOLSLISTGET");
+//gets Type and Tool data then sends to appropriate function depending if its Type or Tool 
 	console.log("toolCol: ", toolCol)
-	console.log("toolValue: ",toolValue)
+	console.log("typeValue: ",typeValue)
 	// console.log("loading tablesList");
-	// do a GET request to get data from DB. GET request is managed by server.js	
-	fetch ('http://localhost:3000/toolType?name='+ toolValue)
+	// do a GET request to get toolList data from DB. GET request is managed by server.js	
+	fetch ('http://localhost:3000/toolType?name='+ typeValue)
 	//return reponse from DB as JSON
 		.then(response => response.json())
 		.then(toolsList => {
-	  		// console.log('Success GET tool list:', toolsList);
-	 //if its Type column send toolList (data to add) & toolElement (element to change) to toolsListCreate
-	  	if(!toolCol) {
-	  		console.log("false if worked")
-			toolsListCreate (toolsList, toolElement)
-	//if its Tool column send toolList (data to use) & toolElement (locator for row) to toolDataExtract
-	  	} else if(toolCol) {
-	  		console.log("need a function for Tool data extraction")
-	  		toolDataExtract(toolsList, toolElement)
-	  	}
+	// console.log('Success GET tool list:', toolsList);
+	 
+	//if its Type column send toolList (data to add) & toolElement (element to change) to toolsListCreate
+		  	if(!toolCol) {	  		
+				toolsListCreate (toolsList, toolElement)
+		//if its Tool column send toolList (data to use) & toolElement (locator for row) to toolDataExtract
+		  	} else if(toolCol) {
+		//should be able to send loadTool but will need a if to differentiate loaded vs. selected data 
+				if(!typeIndex) {
+					toolDataExtract(toolsList, loadTool, toolElement)
+				} else {
+					toolDataExtract(toolsList, toolElement.value, toolElement)
+
+				}
+
+		  		
+		  	}
 		})
 
 		.catch((error) => {
@@ -94,8 +125,10 @@ function toolsListGet (toolElement, toolValue, toolCol) {
 }
 
 function toolsListCreate (toolsList,toolElement) {
-	console.log("toolElement: ", toolElement)
-	console.log(toolsList.length)
+	console.log("TOOLSLISTCREATE");
+	// populates toolList
+	// console.log("toolElement: ", toolElement)
+	// console.log(toolsList.length)
 	let toolCount=toolsList.length;
 	// loop through toolsList appending it to Tool dropdown in selected row
 	for(i=0;i<toolCount;i++){
@@ -114,35 +147,37 @@ function toolsListCreate (toolsList,toolElement) {
 
 
 
-function toolDataExtract (toolsList, toolElement) {
-	console.log("toolElement value: ", toolElement.value)
-	// console.log("toolValue: ", toolValue)
+function toolDataExtract (toolsList, toolVal, toolElement) {
+	console.log("TOOLDATEXTRACT");
+	console.log("toolVal: ", toolVal)
+	// console.log("typeValue: ", typeValue)
 	console.log(toolsList.length)
+	//get length of toolsList
 	let toolCount=toolsList.length;
 	// console.log(toolsList);
+
+	// loop through toolsList looking for match with toolElement.value
 	for(i=0;i<toolCount;i++){
 		console.log(toolsList[i].Tool)
-		if(toolsList[i].Tool===toolElement.value){
-			console.log("MATCH: ", toolsList[i])
+		if(toolsList[i].Tool===toolVal){
+			console.log("MATCH: ", toolsList[i], "i", i)
 			let matchTool = toolsList[i]
-			toolDataAdd(matchTool, toolElement)
+			let toolIndex=i+1;
+			toolDataAdd(matchTool, toolElement, toolIndex)
 			break;
 		}
 	}
 
 }
 
-function toolDataAdd (matchTool, toolElement) {
+function toolDataAdd (matchTool, toolElement, toolIndex) {
+	console.log("toolDataAdd");
 	// console.log("toolOD: ", matchTool.OD)
-	// let ODCell=toolElement.parentElement.parentElement.children[3]
-	// let IDCell=toolElement.parentElement.parentElement.children[4]
-	// let wtCell=toolElement.parentElement.parentElement.children[5]
-	// let lenCell=toolElement.parentElement.parentElement.children[6]
-	// console.log("ODCell: ", ODCell)
-	// console.log("lenCell: ", lenCell)
+	
 
 	let toolArray=Object.values(matchTool)
 	console.log("toolArray: ", toolArray)
+	
 	for(i=3;i<7;i++){
 		let cell = toolElement.parentElement.parentElement.children[i]
 		console.log(cell)
@@ -151,15 +186,23 @@ function toolDataAdd (matchTool, toolElement) {
 		cell.children[0].setAttribute("value", toolArray[i])
 	}
 
+	let cell = toolElement.parentElement.parentElement.children[2]
+	console.log("toolCell: ", cell)
+	cell.children[0].setAttribute("value",matchTool.Tool)
+	cell.children[0].selectedIndex=toolIndex
+	console.log(cell.children[0].selectedIndex)
+
+	// need to change selected value of Tool DD
+
 	// ODCell.setAttribute("value", matchTool.OD)
 	// ODCell.children[0].setAttribute("value", matchTool.OD)
 	// console.log(ODCell)
 }
 
-// function toolDataAdd (toolValue) {
+// function toolDataAdd (typeValue) {
 // 	console.log("Tool data addx");
 
-// 	fetch ('http://localhost:3000/toolData?name='+ toolValue)
+// 	fetch ('http://localhost:3000/toolData?name='+ typeValue)
 // 		//return reponse from DB as JSON
 // 			.then(response => response.json())
 // 			.then(toolsList => {
@@ -181,20 +224,19 @@ function toolDataAdd (matchTool, toolElement) {
 // takes value entered and sets value to cell element
 function input (valuex,idx) {
 //logs value and id of cell that is changed
-	console.log(valuex,idx);	
+	// console.log(valuex,idx);	
 	let cell = document.getElementById(idx).parentElement;
-	console.log(cell);
-	console.log(cell.getAttribute("value"));
+	// console.log(cell);
+	// console.log(cell.getAttribute("value"));
 	//sets parent of entered value to the value entered
 	cell.setAttribute("value", valuex)
 	// had to add this when loading to display
 	cell.children[0].setAttribute("value", valuex);
-	console.log(cell);
+	// console.log(cell);
 }
 
 
 function addRow() {	
-
 	let bhaTable=document.getElementById('BHAentry');
 	let toolRow=document.getElementById('dataRow');
 	let newRow =toolRow.cloneNode(true);
@@ -203,25 +245,22 @@ function addRow() {
 	// reset Type value to DC as it is cloning from top row that may have been changed
 	// may need to do this for other values
 	newRow.children[1].setAttribute("value", "DC");
-
-	console.log("newRow.children[1].value: ", newRow.children[1])
-
-
+	// console.log("newRow.children[1].value: ", newRow.children[1])
 	// newRow.setAttribute("value",rowCount);
-	console.log("newRow: ",newRow);
+	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
-	console.log("newRowCols: ",newRowCols);
+	// console.log("newRowCols: ",newRowCols);
 	// loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){	
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
-		console.log(newRowCols[i].id);	
+		// console.log(newRowCols[i].id);	
 	}
 	// have to do child of child for cells with input boxes
 	for(j=1;j<8;j++){
 		
 		newRow.children[j].children[0].id=(newRow.children[j].children[0].id+rowCount)
-		console.log(newRow.children[0].id+rowCount);
-		console.log(newRow.children[j].children[0].id);
+		// console.log(newRow.children[0].id+rowCount);
+		// console.log(newRow.children[j].children[0].id);
 	}
 	// append new row to table & increase row count 
 	tabBody.appendChild(newRow);
@@ -229,25 +268,25 @@ function addRow() {
 	document.body.appendChild(document.createTextNode(rowCount))
 	
 	// change row # text and value based on increased row count
-	console.log(newRow.children[0]);
+	// console.log(newRow.children[0]);
 	newRow.children[0].textContent=rowCount;
 	newRow.children[0].setAttribute("value",rowCount);
-	console.log(newRow.children[0].dataset.value);
+	// console.log(newRow.children[0].dataset.value);
 }
 
 function clearVals (newRow) {
 	console.log("clearVals", newRow)
 	// can do this at start addRow
 	for(i=3;i<7;i++){
-		console.log(newRow.children[i]);
+		// console.log(newRow.children[i]);
 		newRow.children[i].setAttribute("value",0);
 		newRow.children[i].children[0].setAttribute("value",0);
 	}
 
 	let selectTool=newRow.children[2].children[0]
-	console.log("selectTool: ", selectTool)
+	// console.log("selectTool: ", selectTool)
 	let childCount=selectTool.childElementCount
-	console.log("childCount: ", childCount)
+	// console.log("childCount: ", childCount)
 	//loop through select element deleting all added values
 	for(j=childCount;j>0;j--){
 		selectTool.remove(j)
@@ -268,34 +307,34 @@ function myDeleteFunction(rowDelButt) {
 	}
 }
 
-function sendSaveName (isSave) {
-	console.log("isSave: ", isSave)
-	let saveSelect =document.getElementById('saveInput').value;
-	console.log("saves: ", saveSelect);
-	let saveJSON= {"name" : saveSelect}
-	console.log("saveJson: ",saveJSON)
-	if(isSave) {
-		savesExist(saveSelect, saveJSON)
-	}
+// function sendSaveName (isSave) {
+// 	console.log("isSave: ", isSave)
+// 	let saveSelect =document.getElementById('saveInput').value;
+// 	console.log("saves: ", saveSelect);
+// 	let saveJSON= {"name" : saveSelect}
+// 	console.log("saveJson: ",saveJSON)
+// 	if(isSave) {
+// 		savesExist(saveSelect, saveJSON)
+// 	}
 	
-	fetch ('http://localhost:3000/saveName'
-		,{
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(
-				saveJSON
-				)
-			})
-			.then(response => response.json())
-			.then(saveNamex => {
-		  		console.log('Success:', saveNamex);
-			})
-			.catch((error) => {
-		  		console.error('Error:', error);
-			});
-}
+// 	fetch ('http://localhost:3000/saveName'
+// 		,{
+// 			method: 'PUT',
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 			},
+// 			body: JSON.stringify(
+// 				saveJSON
+// 				)
+// 			})
+// 			.then(response => response.json())
+// 			.then(saveNamex => {
+// 		  		console.log('Success:', saveNamex);
+// 			})
+// 			.catch((error) => {
+// 		  		console.error('Error:', error);
+// 			});
+// }
 
 
 
@@ -341,8 +380,8 @@ function mySaveFunction () {
 	sendSaveName (true)
 }
 
-function sendSaveName (isSave) {
-	//this function 
+async function sendSaveName (isSave) {
+	//this function sends save name to server
 	console.log("FUNCTION sendSaveName");
 	console.log("isSave: ", isSave)
 	// get value entered in input box
@@ -353,7 +392,7 @@ function sendSaveName (isSave) {
 	console.log("saveJson: ",saveJSON)
 	
 	// send saveJSON to server
-	fetch ('http://localhost:3000/saveName'
+	await fetch ('http://localhost:3000/saveName'
 		,{
 			method: 'PUT',
 			headers: {
@@ -508,12 +547,14 @@ function putData (saveArray) {
 }
 
 
-function myLoadFunction () {
+async function myLoadFunction () {
 	//sends value in input box and identifies that its not save action
-	sendSaveName (false)
+	await sendSaveName (false)
 	// console.log("loading: ", saveName.name);
-	// do a GET request to get data from DB. GET request is managed by server.js	
-	fetch ('http://localhost:3000/')
+	// do a GET request to get data from DB. GET request is managed by server.js
+
+	//need to await here	
+	await fetch ('http://localhost:3000/')
 	//return reponse from DB as JSON
 			.then(response => response.json())
 			.then(json => {
@@ -575,23 +616,30 @@ function returnData (json) {
 
 function loadDD (loadData,loadRows) {
 	console.log(loadRows)
+	// loops through added rows & loadData for tool & type columns
+	// then sends to DD function to set loaded values
 	for(k=0;k<loadRows;k++) {
-		// loops through added rows & loadData for tool type column
-		// then sends to DD function to set loaded values
-		// gets the select element from table
-			console.log("k: ", k);
-			let selectId =tabBody.children[k].children[1].children[0];
-
-			console.log("selectId: ", selectId);
-		//gets the tool type for dropdown from JSON
-			let selectedType=loadData[k].Type;
-			console.log("selectedType: ", selectedType);
-		// sends tool type to switch function to return the select index that tool type is at
-			switchFunc (selectedType);
-			console.log("selected index: ", selectIndex);
-		// sends index and id to DD function so they can be loaded 
-			DD(selectIndex, selectId.id)
-			//need to get order of selectedIndex, do a switch? 
+		// console.log("k: ", k);
+		// set variable for type element to be updated and sets variable
+			let typeElemUpdate =tabBody.children[k].children[1].children[0];
+			console.log("typeElemUpdate: ", typeElemUpdate);
+		// set variable for tool element to be updated and sets variable	
+			let toolElemUpdate =tabBody.children[k].children[2].children[0];
+			console.log("toolElemUpdate: ", toolElemUpdate);
+		//  set variable for type value to load from JSON file from server
+			let loadType=loadData[k].Type;
+			console.log("loadType: ", loadType);
+		//  set variable for tool value to load from JSON file from server
+			let loadTool=loadData[k].Tool;
+			console.log("loadTool: ", loadTool);
+		// sends type value to switch function to return the selected index for type
+			switchFunc (loadType);
+			console.log("selected index: ", typeIndex);
+		// sends type index and id to DD function so they can be loaded 
+			DD(typeIndex, typeElemUpdate.id, false)
+		// cannot get selected index for tool so send false but add tool text value
+			DD(false, toolElemUpdate.id, loadTool)
+		 
 		}
 
 }
@@ -599,17 +647,17 @@ function loadDD (loadData,loadRows) {
 function loadNum (loadData,loadRows) {
 	for(m=0;m<loadRows;m++) {
 		let loadRow=(tabBody.children[m]);
-		console.log(loadRow);
+		// console.log(loadRow);
 
 		for(n=3;n<7;n++){
 			let loadRowNumCol=loadRow.children[n].children[0];
 			
 			let idx=loadRowNumCol.id;
-			console.log("idx: ", idx);
+			// console.log("idx: ", idx);
 			let prop=headers.children[n].textContent;
-			console.log("prop: ", prop);
+			// console.log("prop: ", prop);
 			let valuex=loadData[m][prop];
-			console.log("valuex: ", valuex)
+			// console.log("valuex: ", valuex)
 			input (valuex,idx);
 		}
 
@@ -618,39 +666,39 @@ function loadNum (loadData,loadRows) {
 
 
 
-function switchFunc (selectedType) {
-	console.log("SwithchFunc");
+function switchFunc (loadType) {
+	// console.log("SwithchFunc");
 	// returns index for tool type given in JSON
-	switch (selectedType) {
+	switch (loadType) {
 
 		case "DC":
-		selectIndex=1;
+		typeIndex=1;
 		break;
 	
 		case "HWDP":
-		selectIndex=2;
+		typeIndex=2;
 		break;
 
 		case "DP":
-		selectIndex=3;
+		typeIndex=3;
 		break;
 
 		case "Stab":
-		selectIndex=4;
+		typeIndex=4;
 		break;
 
 		case "M_LWD":
-		selectIndex=5;
+		typeIndex=5;
 		break;
 
 		case "Motor_RSS":
-		selectIndex=6;
+		typeIndex=6;
 		break;
 
 		case "Sub_XO":
-		selectIndex=7;
+		typeIndex=7;
 	}
-	console.log("selectIndex: ", selectIndex)
+	// console.log("typeIndex: ", typeIndex)
 }
 	
 
@@ -708,14 +756,16 @@ function tablesListCreate (tablesList) {
 }
 
 function tablesListClear () {
- let savesToDel=document.getElementById("saves")
-	while(savesToDel.hasChildNodes()){
-		savesToDel.removeChild(savesToDel.childNodes[0])
-		// console.log(savesToDel.hasChildNodes);
-	}
+	//clears saves list
+	 let savesToDel=document.getElementById("saves")
+		while(savesToDel.hasChildNodes()){
+			savesToDel.removeChild(savesToDel.childNodes[0])
+			// console.log(savesToDel.hasChildNodes);
+		}
 }
 
 function dropTable () {
+	// dont think this is used
 	fetch ('http://localhost:3000/dropTable'
 		, {
 		method: 'DELETE',
@@ -726,7 +776,7 @@ function dropTable () {
 
 
 function delName () {
-
+	// send deleted tables to server to have del prefix added 
 	let saveInputVal=document.getElementById("saveInput").value;
 
 	console.log("renaming table to: del_", saveInputVal)
@@ -738,12 +788,23 @@ function delName () {
 		console.log('delName success: ', log)
 	})
 	document.getElementById('saveInput').value="";
+	//clear and readd tablesList
 	tablesListClear()
 	tablesListGet ()
 }
 
+function moveRowsUp (buttClick) {
+	let rowToMove=buttClick.parentElement.parentElement.id 
+	let rowNos=rowToMove.slice(7)
+	console.log(rowNos)
+	let rowBefore=rowNos-1
+	console.log(rowBefore)
+	
+}
+
 
 function createInput (thisx,selectedIndex) {
+	// don't think this is used
 	let optionSelect=thisx[selectedIndex].id
 	console.log(thisx[selectedIndex].id);
 	// console.log(selectedIndex,id);

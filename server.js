@@ -109,9 +109,9 @@ app.get('/toolData' ,(req, res)=>{
 
 
 //update variable saveName
-app.put('/saveName', (req, res)=>{
+app.put('/saveName', async (req, res)=>{
 	
-	saveName = req.body
+	saveName = await req.body
 	res.send(saveName)
 	console.log("This save name has been sent to server: ",saveName)
 	
