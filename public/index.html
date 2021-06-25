@@ -31,14 +31,14 @@
 			    <tr id="headersUnits">
 			    	
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsOD">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
 
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsID">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
@@ -46,13 +46,13 @@
 				    </th>
 
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsWT">
 				    			<option class="units" value="# ft"># ft</option>
 				    			<option class="units" value="kg ft">kg ft</option>
 				    	</select>
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsLEN">
 				    			<option class="units" value="in">ft</option>
 				    			<option class="units" value="mm">m</option>
 				    	</select>
@@ -64,7 +64,7 @@
 
 			  <tbody id="tabBody">
 			  
-				  <tr id="dataRow">
+				  <tr id="dataRow0">
 				    <td class="num" id="num" value=1>1</td>
 				    <td class="select" id="typeTd" value="xc">
 				    	<select id="typeSelect" onchange="DD(this.selectedIndex, this.id)" >
@@ -103,7 +103,7 @@
 				   		<td>
 						
 				   		<button type="button" onClick="moveRowsUp(this)" id="moveButt"><a id="moveButtText">↑</a></button>
-				   		<button type="button" onClick="myDeleteFunction(this)" id="moveButt"><a id="moveButtText">↓</a></button>
+				   		<button type="button" onClick="moveRowsDown(this)" id="moveButt"><a id="moveButtText">↓</a></button>
 				   		
 				   	</td>
 				  </tr>

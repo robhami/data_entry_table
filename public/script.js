@@ -24,7 +24,10 @@ function DD (typeIndex, elemUpdate, loadTool) {
 	
 	//set typeValue to null to allow assignment in if functions below
 	let typeValue 
-	//a typeIndex is only possible for type column, so check typeIndex not false
+	//a typeIndex is only possible for type column 
+	// due to load DD function sending a false value with the elemUpdate for Tool, 
+	// so check typeIndex not false
+	//
 	
 	if(typeIndex!=false) {
 	//set variable for the select option element being processed
@@ -38,6 +41,7 @@ function DD (typeIndex, elemUpdate, loadTool) {
 	
 	//changes type cell value to loaded or selected typeValue
 		selectRow.parentElement.setAttribute('value', typeValue);
+		console.log("SRPE: ", selectRow.parentElement)
 	//changes type cell to type index(i.e. visible) to correct value, 
 	//this had to be done to use load data
 		selectRow.selectedIndex=typeIndex;
@@ -83,6 +87,16 @@ function DD (typeIndex, elemUpdate, loadTool) {
 	// and toolCol (whether its Type or Tool cell that is selected)
 		toolsListGet(toolElement, typeValue, toolCol, loadTool, typeIndex)
 		// toolDataAdd (typeValue)
+	}
+
+
+	if (elemUpdate.startsWith("units")){
+		
+		console.log(elemUpdate)
+		let inputID=elemUpdate.replace("units","")
+		console.log(inputID)
+		console.log(rowCount)
+
 	}
 
 
@@ -148,6 +162,7 @@ function toolsListCreate (toolsList,toolElement) {
 
 
 function toolDataExtract (toolsList, toolVal, toolElement) {
+	//match tool Element selected or loaded with value on list 
 	console.log("TOOLDATEXTRACT");
 	console.log("toolVal: ", toolVal)
 	// console.log("typeValue: ", typeValue)
@@ -156,9 +171,9 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 	let toolCount=toolsList.length;
 	// console.log(toolsList);
 
-	// loop through toolsList looking for match with toolElement.value
+	// loop through toolsList looking for match with toolElement.value (selected or loaded tool)
 	for(i=0;i<toolCount;i++){
-		console.log(toolsList[i].Tool)
+		// console.log(toolsList[i].Tool)
 		if(toolsList[i].Tool===toolVal){
 			console.log("MATCH: ", toolsList[i], "i", i)
 			let matchTool = toolsList[i]
@@ -171,6 +186,7 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 }
 
 function toolDataAdd (matchTool, toolElement, toolIndex) {
+	//change Tool dropdown shown value to match loaded or selected
 	console.log("toolDataAdd");
 	// console.log("toolOD: ", matchTool.OD)
 	
@@ -236,9 +252,10 @@ function input (valuex,idx) {
 }
 
 
-function addRow() {	
+function addRow() {
+	// adds new row
 	let bhaTable=document.getElementById('BHAentry');
-	let toolRow=document.getElementById('dataRow');
+	let toolRow=document.getElementById('dataRow0');
 	let newRow =toolRow.cloneNode(true);
 	clearVals(newRow);
 	newRow.id=newRow.id+rowCount;
@@ -253,14 +270,14 @@ function addRow() {
 	// loop through newRow entries and change id based on original id + rowcount
 	for(i=0;i<1;i++){	
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
-		// console.log(newRowCols[i].id);	
+		console.log(newRowCols[i].id);	
 	}
 	// have to do child of child for cells with input boxes
 	for(j=1;j<8;j++){
 		
 		newRow.children[j].children[0].id=(newRow.children[j].children[0].id+rowCount)
-		// console.log(newRow.children[0].id+rowCount);
-		// console.log(newRow.children[j].children[0].id);
+		console.log(newRow.children[0].id+rowCount);
+		console.log(newRow.children[j].children[0].id);
 	}
 	// append new row to table & increase row count 
 	tabBody.appendChild(newRow);
@@ -276,7 +293,7 @@ function addRow() {
 
 function clearVals (newRow) {
 	console.log("clearVals", newRow)
-	// can do this at start addRow
+	// clears values in new row because cloning previos row in addRow
 	for(i=3;i<7;i++){
 		// console.log(newRow.children[i]);
 		newRow.children[i].setAttribute("value",0);
@@ -294,6 +311,7 @@ function clearVals (newRow) {
 }
 
 function myDeleteFunction(rowDelButt) {	
+
 	console.log("row: ",rowDelButt);
 	// console.log("row count del func start: ", rowCount)
 	if(rowCount<2 || rowDelButt.id==="delButt"){
@@ -302,39 +320,11 @@ function myDeleteFunction(rowDelButt) {
 		// console.log(rowDelButt.parentElement.parentElement);
 		rowDelButt.parentElement.parentElement.remove();
 		rowCount--;
-
 		// console.log("row count del func end: ",rowCount);
 	}
 }
 
-// function sendSaveName (isSave) {
-// 	console.log("isSave: ", isSave)
-// 	let saveSelect =document.getElementById('saveInput').value;
-// 	console.log("saves: ", saveSelect);
-// 	let saveJSON= {"name" : saveSelect}
-// 	console.log("saveJson: ",saveJSON)
-// 	if(isSave) {
-// 		savesExist(saveSelect, saveJSON)
-// 	}
-	
-// 	fetch ('http://localhost:3000/saveName'
-// 		,{
-// 			method: 'PUT',
-// 			headers: {
-// 				'Content-Type': 'application/json',
-// 			},
-// 			body: JSON.stringify(
-// 				saveJSON
-// 				)
-// 			})
-// 			.then(response => response.json())
-// 			.then(saveNamex => {
-// 		  		console.log('Success:', saveNamex);
-// 			})
-// 			.catch((error) => {
-// 		  		console.error('Error:', error);
-// 			});
-// }
+
 
 
 
@@ -345,6 +335,17 @@ function mySaveFunction () {
 	saveArray=[];
 	// send saveName to server ??????
 	
+	//do  loop to set td class=select to its selectedIndex
+
+	for(x=0;x<rowCount;x++){
+		
+		let selectVal = tabBody.children[x].children[2].children[0].value
+		console.log("selectVal: ", selectVal)
+		let TDVal = tabBody.children[x].children[2]
+
+		TDVal.setAttribute("value",selectVal)
+		console.log("TDVal: ", TDVal)
+	}
 	
 	for(j=0;j<rowCount;j++) {
 	//set save row for each step of loop from 0 to rowCount
@@ -356,8 +357,8 @@ function mySaveFunction () {
 			let prop=headers.children[k].textContent;
 			// get object value from row
 			let val=saveRow.children[k].getAttribute("value");
-			// console.log("prop",prop);
-			// console.log("val",val);
+			console.log("prop",prop);
+			console.log("val",val);
 			//add property to saveObject
 			Object.defineProperty(saveObject,prop,{value: val, enumerable: true, configurable: true});	
 		}
@@ -570,6 +571,7 @@ async function myLoadFunction () {
 }
 
 function deleteOldRows () {
+	//deletes old rows when load function called
 	// set startRowCount variable to initial rowCount
 	console.log("deleteOldRows");
 	let startRowCount=rowCount;
@@ -794,15 +796,44 @@ function delName () {
 }
 
 function moveRowsUp (buttClick) {
-	let rowToMove=buttClick.parentElement.parentElement.id 
-	let rowNos=rowToMove.slice(7)
-	console.log(rowNos)
-	let rowBefore=rowNos-1
-	console.log(rowBefore)
+	//buttClick is move button element
+	console.log("buttClick: ", buttClick)
+	//set variable on row that buttClick is on 
+	let rowToMove=buttClick.parentElement.parentElement 
+	console.log("rowMove: ", rowToMove)
+	//set variable to row above 
+	let prev=rowToMove.previousSibling;
+	console.log("prev: ", prev)
+	//set variable to parent of row which is actually table body
+	let par=rowToMove.parentNode
+	console.log("par: ", par)
+	// delete row to move
+	par.removeChild(rowToMove)
+	// insert row to move above prev row
+	par.insertBefore(rowToMove, prev)
+
 	
 }
 
+function moveRowsDown (buttClick) {
+	//buttClick is move button element
+	console.log("buttClick: ", buttClick)
+	//set variable on row that buttClick is on 
+	let rowToMove=buttClick.parentElement.parentElement 
+	console.log("rowMove: ", rowToMove)
+	//set variable to row above 
+	let next=rowToMove.nextSibling.nextSibling;
+	console.log("next: ", next)
+	//set variable to parent of row which is actually table body
+	let par=rowToMove.parentNode
+	console.log("par: ", par)
+	// delete row to move
+	par.removeChild(rowToMove)
+	// insert row to move above prev row
+	par.insertBefore(rowToMove, next)
 
+	
+}
 function createInput (thisx,selectedIndex) {
 	// don't think this is used
 	let optionSelect=thisx[selectedIndex].id
