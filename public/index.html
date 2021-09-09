@@ -31,14 +31,16 @@
 			    <tr id="headersUnits">
 			    	
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsOD">
+				    	<select  onchange="DD(this.selectedIndex, this.id)") 
+
+				    	class="units" id="unitsOD">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
 
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsID">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsID">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
@@ -46,13 +48,13 @@
 				    </th>
 
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsWT">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsWT">
 				    			<option class="units" value="# ft"># ft</option>
 				    			<option class="units" value="kg ft">kg ft</option>
 				    	</select>
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units" id="unitsLEN">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsLEN">
 				    			<option class="units" value="in">ft</option>
 				    			<option class="units" value="mm">m</option>
 				    	</select>
@@ -85,15 +87,14 @@
 					</td>
 				    
 					<td class="numEnt" value=0>
-						<input class="form-control-custom" type="number" id="OD" value="0" oninput="input(this.value,this.id)"/>
-					</td>
+						<input class="form-control-custom" type="number" id="OD" value="0" oninput="input(this.defaultValue,this.id)"/></td>
 					<td class="numEnt" value="0">
 						<input class="form-control-custom" type="number" id="ID" value="0" oninput="input(this.value,this.id)"/>
 					</td>
 					<td class="numEnt" value="0">
-						<input class="form-control-custom" type="number" id="weight" value="0" oninput="input(this.value,this.id)"/></td>
+						<input class="form-control-custom" type="number" id="WT" value="0" oninput="input(this.value,this.id)"/></td>
 					<td class="numEnt" value="0">
-						<input class="form-control-custom" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
+						<input class="form-control-custom" type="number" id="LEN" value="0" oninput="input(this.value,this.id)"/></td>
 					<td>
 						
 				   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>

@@ -1,4 +1,12 @@
+const pageAccessedByReload = (
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+);
 
+alert(pageAccessedByReload);
 
 let rowCount=1;
 let saveObject={};
@@ -11,11 +19,21 @@ let typeIndex="";
 //populates the saved games dropdown
 tablesListGet ()
 
+function priorDD (index, elemUpdate) {
+// added this in case need prior DD value for conversion, this value can be assigned to a global variable
+// currently only two values in units DD's so dont need prior DD value
+		console.log("elemUpdate: ", elemUpdate)
+		let unitsDD=document.getElementById(elemUpdate)
+		let unitsDDVal=unitsDD.value
+		console.log("unitsDDVal: ", unitsDDVal)
+}
 
 function DD (typeIndex, elemUpdate, loadTool) {
 	// sets the value to selected or loaded DD value
 	console.log("elemUpdate: ", elemUpdate);
+	// selected index
 	console.log("typeIndex: ", typeIndex);
+	// this must come from loading function
 	console.log("loadTool: ", loadTool);
 
 	// set variable for the type element being processed
@@ -89,17 +107,57 @@ function DD (typeIndex, elemUpdate, loadTool) {
 		// toolDataAdd (typeValue)
 	}
 
-
+	// get units from units DD's
 	if (elemUpdate.startsWith("units")){
-		
+
 		console.log(elemUpdate)
-		let inputID=elemUpdate.replace("units","")
-		console.log(inputID)
-		console.log(rowCount)
+		let unitsDD=document.getElementById(elemUpdate)
+		console.log("unitsDD: ", unitsDD)
+		let unitsDDVal=unitsDD.value
+		console.log("unitsDDVal: ", unitsDDVal)
+	// because id starts with OD then number added, have to do first row separately as its ID is OD
+		let idPrefix=elemUpdate.replace("units","")
+	// remove units from DD id so it becomes same as first row ID for column selected (e.g. OD)	
+		convFac(idPrefix, unitsDDVal)
+
+		for (i=1;i<rowCount;i++) {
+		//loop through rows creating row ID's to send to convert
+			let idNumd=idPrefix + i	
+			// units=selectRow.parentElement.getAttribute("value")
+			let unitsDD=document.getElementById(elemUpdate)
+			console.log("unitsDD: ", unitsDD)
+			let unitsDDVal=unitsDD.value
+			convFac(idNumd, unitsDDVal)
+		}
 
 	}
 
 
+
+}
+
+function convFac(inputId, units) {
+	console.log("convert: ", inputId)
+	console.log("unitsDDVal: ", units)
+
+	switch (units) {
+
+		case "mm": 
+		let mm=25.4
+		doConv(inputId, units, mm)
+		break;
+	}
+}
+
+function doConv (inputId, units, fac) {
+	let numUnitConv=document.getElementById(inputId).value
+	console.log(numUnitConv)
+	
+	
+	let conVal=fac*numUnitConv
+	console.log(conVal)
+
+	input(conVal, inputId)
 
 }
 
@@ -240,15 +298,19 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 // takes value entered and sets value to cell element
 function input (valuex,idx) {
 //logs value and id of cell that is changed
-	// console.log(valuex,idx);	
-	let cell = document.getElementById(idx).parentElement;
-	// console.log(cell);
+	console.log(valuex,idx);	
+	let cellx = document.getElementById(idx).parentElement;
+	console.log(cellx);
 	// console.log(cell.getAttribute("value"));
 	//sets parent of entered value to the value entered
-	cell.setAttribute("value", valuex)
+	cellx.setAttribute("value", valuex)
 	// had to add this when loading to display
-	cell.children[0].setAttribute("value", valuex);
+	cellx.children[0].setAttribute("value", valuex);
 	// console.log(cell);
+	// cell.children[0].textContent=valuex;
+	// cell.value(valuex)
+	cellx.setAttribute.defaultValue=valuex;
+	
 }
 
 
@@ -267,7 +329,7 @@ function addRow() {
 	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
 	// console.log("newRowCols: ",newRowCols);
-	// loop through newRow entries and change id based on original id + rowcount
+	// loop through newRow entries and change id for No column based on original id + rowcount
 	for(i=0;i<1;i++){	
 		newRowCols[i].id=newRowCols[i].id+(rowCount+1);
 		console.log(newRowCols[i].id);	
@@ -276,7 +338,7 @@ function addRow() {
 	for(j=1;j<8;j++){
 		
 		newRow.children[j].children[0].id=(newRow.children[j].children[0].id+rowCount)
-		console.log(newRow.children[0].id+rowCount);
+		// console.log(newRow.children[0].id+rowCount);
 		console.log(newRow.children[j].children[0].id);
 	}
 	// append new row to table & increase row count 
@@ -647,6 +709,7 @@ function loadDD (loadData,loadRows) {
 }
 
 function loadNum (loadData,loadRows) {
+	console.log("*****************************LD******",loadData)
 	for(m=0;m<loadRows;m++) {
 		let loadRow=(tabBody.children[m]);
 		// console.log(loadRow);
@@ -655,11 +718,14 @@ function loadNum (loadData,loadRows) {
 			let loadRowNumCol=loadRow.children[n].children[0];
 			
 			let idx=loadRowNumCol.id;
-			// console.log("idx: ", idx);
+			console.log("idx: ", idx);
 			let prop=headers.children[n].textContent;
-			// console.log("prop: ", prop);
+			console.log("prop: ", prop);
+			//seems like this value sticks maybe because its json
+			//conversion works when its loaded put not typed
+			//maybe need to write to json 
 			let valuex=loadData[m][prop];
-			// console.log("valuex: ", valuex)
+			console.dir("valuex: ", valuex)
 			input (valuex,idx);
 		}
 
