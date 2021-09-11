@@ -1,12 +1,12 @@
-const pageAccessedByReload = (
-  (window.performance.navigation && window.performance.navigation.type === 1) ||
-    window.performance
-      .getEntriesByType('navigation')
-      .map((nav) => nav.type)
-      .includes('reload')
-);
+// const pageAccessedByReload = (
+//   (window.performance.navigation && window.performance.navigation.type === 1) ||
+//     window.performance
+//       .getEntriesByType('navigation')
+//       .map((nav) => nav.type)
+//       .includes('reload')
+// );
 
-alert(pageAccessedByReload);
+// alert(pageAccessedByReload);
 
 let rowCount=1;
 let saveObject={};
@@ -296,20 +296,33 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 
 
 // takes value entered and sets value to cell element
-function input (valuex,idx) {
+function input (valuex,idx,keyed) {
+	// alert(keyed)
 //logs value and id of cell that is changed
 	console.log(valuex,idx);	
 	let cellx = document.getElementById(idx).parentElement;
 	console.log(cellx);
 	// console.log(cell.getAttribute("value"));
 	//sets parent of entered value to the value entered
-	cellx.setAttribute("value", valuex)
+	cellx.value=valuex
 	// had to add this when loading to display
-	cellx.children[0].setAttribute("value", valuex);
+	cellx.children[0].value=valuex
 	// console.log(cell);
 	// cell.children[0].textContent=valuex;
 	// cell.value(valuex)
-	cellx.setAttribute.defaultValue=valuex;
+	// if(keyed) {
+	// 	// alert("keyed")
+	// 	// fetch('http://localhost:3000/index')
+	// 	// .then(response=>response.text())
+	// 	// .then(data=>console.log("worked: ", data))
+	// 	cellx.value='property set'
+	// 	cellx.value=valuex
+	// 	console.log(document.getElementById(idx).parentElement.value)
+	// 	console.log(cellx.property)
+	// 	// cellx.setAttribute("textContent",valuex)
+	// 	// cellx.value
+	// }
+	
 	
 }
 
