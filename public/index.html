@@ -31,14 +31,16 @@
 			    <tr id="headersUnits">
 			    	
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onchange="DD(this.selectedIndex, this.id)") 
+
+				    	class="units" id="unitsOD">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
 
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsID">
 				    			<option class="units" value="in">in</option>
 				    			<option class="units" value="mm">mm</option>
 				    	</select>
@@ -46,13 +48,13 @@
 				    </th>
 
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsWT">
 				    			<option class="units" value="# ft"># ft</option>
 				    			<option class="units" value="kg ft">kg ft</option>
 				    	</select>
 				    </th>
 				    <th scope="col">
-				    	<select  onclick="DD(this.selectedIndex, this.id)" class="units">
+				    	<select  onchange="DD(this.selectedIndex, this.id)" class="units" id="unitsLEN">
 				    			<option class="units" value="in">ft</option>
 				    			<option class="units" value="mm">m</option>
 				    	</select>
@@ -60,18 +62,15 @@
 				 
 			    </tr>
 
-
-
-
-
 			  </thead>
 
 			  <tbody id="tabBody">
 			  
-				  <tr id="dataRow">
+				  <tr id="dataRow0">
 				    <td class="num" id="num" value=1>1</td>
-				    <td class="select" id="typeTd" value="DC">
-				    	<select id="typeSelect" onclick="DD(this.selectedIndex, this.id)">
+				    <td class="select" id="typeTd" value="xc">
+				    	<select id="typeSelect" onchange="DD(this.selectedIndex, this.id)" >
+				    			<option value=""selected="true" disabled>Tool Type</option>
 				    			<option value="DC">DC</option>
 				    			<option value="HWDP">HWDP</option>
 				    			<option value="DP">DP</option>
@@ -82,21 +81,20 @@
 				    	</select>
 				    </td>
 				    <td class="select" id="tool" value="tool">
-						<select id="toolDD" value="tool">
-				    			<option value="pend">Select Tool</option>
+						<select id="toolDD" value="tool" onchange="DD(this.selectedIndex, this.id)" required >
+				    			<option value="pend" disabled selected="true" >Select Tool</option>
 				    	</select>
 					</td>
 				    
 					<td class="numEnt" value=0>
-						<input class="form-control-custom" type="number" id="OD" value="0" oninput="input(this.value,this.id)"/>
-					</td>
+						<input class="form-control-custom" type="number" id="OD" value="0" oninput="input(this.value,this.id, true)"/></td>
 					<td class="numEnt" value="0">
 						<input class="form-control-custom" type="number" id="ID" value="0" oninput="input(this.value,this.id)"/>
 					</td>
 					<td class="numEnt" value="0">
-						<input class="form-control-custom" type="number" id="weight" value="0" oninput="input(this.value,this.id)"/></td>
+						<input class="form-control-custom" type="number" id="WT" value="0" oninput="input(this.value,this.id)"/></td>
 					<td class="numEnt" value="0">
-						<input class="form-control-custom" type="number" id="length" value="0" oninput="input(this.value,this.id)"/></td>
+						<input class="form-control-custom" type="number" id="LEN" value="0" oninput="input(this.value,this.id)"/></td>
 					<td>
 						
 				   		<button type="button" onClick="myDeleteFunction(this)" id="delButt"><a id="buttText">X</a></button>
@@ -105,8 +103,8 @@
 
 				   		<td>
 						
-				   		<button type="button" onClick="myDeleteFunction(this)" id="moveButt"><a id="moveButtText">↑</a></button>
-				   		<button type="button" onClick="myDeleteFunction(this)" id="moveButt"><a id="moveButtText">↓</a></button>
+				   		<button type="button" onClick="moveRowsUp(this)" id="moveButt"><a id="moveButtText">↑</a></button>
+				   		<button type="button" onClick="moveRowsDown(this)" id="moveButt"><a id="moveButtText">↓</a></button>
 				   		
 				   	</td>
 				  </tr>
@@ -122,28 +120,23 @@
 					<div class="input-group-prepend" id="saveBar">
 						<button type="button" class="btn btn-primary btn" onClick="myLoadFunction()" id="calcButt">Load</button>
 					</div>
-					<!-- <select class="custom-select" id="inputGroupSelect04" onchange="createInput(this,this.selectedIndex)"> -->
-							<input type="text" list="saves" id="saveInput" onfocus="this.value=''" onchange="this.blur();">
+					
+							<input type="text" list="saves" id="saveInput" onfocus="this.value=''" onchange="this.blur();" placeholder="Enter save name or select below:" autocomplete="off" method="get">
 							<datalist id="saves">
-								<!-- <option selected>Choose...</option> -->
-								<option>Example One</option>
-								<option >Example Two</option>
-								<option >Example Three</option>
-								<!-- <option disabled>------------</option>
-								<option  id="saveOption">New Save File</option> -->
+								
 							</datalist>
-					<!-- </select> -->
+				
 					
 					<div class="input-group-append">
 						<button type="submit" class="btn btn-success btn" onClick="mySaveFunction()" id="savButt">Save</button>
-						<button type="submit" class="btn btn-danger btn" onClick="" id="saveAsButt">Save As</button>
+						<button type="submit" class="btn btn-danger btn" onClick="delName()" id="delTabButt">Delete</button>
 					</div>
 				</div>
 
 			
 		</div>	
 
-			
+<!-- <p id="rowCountDisplay"></p>	 -->		
 			
 </div>
 			
