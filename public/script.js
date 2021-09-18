@@ -69,14 +69,15 @@ function DD (typeIndex, elemUpdate, loadTool) {
 	// console.log(selectRow.parentElement);
 	// console.log(tool.children[0].childElementCount)
 
-	// variable to identify if Tool Column for toolListGet function to send to correct subsequent function
+	// variable to identify if Tool Column for toolListGet function 
 	let toolCol= false;
+	
 	// if id selected is typeSelect (i.e. its type column)
 	if (elemUpdate.startsWith("typeSelect")){
 	// variable that identifies cell of Tool Column is selected and needs to be populated
 		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
-		// console.log("toolElement", toolElement)
-	//send toolElement (cell to change), tool value (value selected in Type cell), 
+		console.log("toolElement", toolElement)
+	//send toolElement ( tool cell to change), tool value (value selected in Type cell), 
 	// and toolCol (whether its Type or Tool cell that is selected)
 		toolsListGet(toolElement, typeValue, toolCol)
 	}
@@ -102,7 +103,8 @@ function DD (typeIndex, elemUpdate, loadTool) {
 		console.log("loadTool: ", loadTool)
 		
 	//send toolElement (cell selected where data read from), tool value (value selected in Type cell), 
-	// and toolCol (whether its Type or Tool cell that is selected)
+	// toolCol (whether its Type or Tool cell that is selected)
+	// loadTool is text that needs loaded & typeIndex is its index
 		toolsListGet(toolElement, typeValue, toolCol, loadTool, typeIndex)
 		// toolDataAdd (typeValue)
 	}
@@ -143,23 +145,51 @@ function convFac(inputId, units) {
 	switch (units) {
 
 		case "mm": 
-		let mm=25.4
+		let mm=25.39998628
 		doConv(inputId, units, mm)
 		break;
+
+		case "in":
+		let inc=0.0393701
+		doConv(inputId, units, inc)
+		break;
+
+		case "# ft":
+		let lb=2.2046226
+		doConv(inputId, units, lb)
+		break;
+
+		case "kg ft":
+		let kgft=0.4535923745
+		doConv(inputId, units, kgft)
+		break;
+
+		case "ft":
+		let ft=3.280839895
+
+		doConv(inputId, units, ft)
+		break;
+
+		case "m":
+		let m=0.3048
+		doConv(inputId, units, m)
+		break;
+
 	}
 }
 
 function doConv (inputId, units, fac) {
 	let numUnitConv=document.getElementById(inputId).value
 	console.log(numUnitConv)
+	let conVal=(fac*numUnitConv).toPrecision(3)
 	
-	
-	let conVal=fac*numUnitConv
-	console.log(conVal)
 
+	console.log(conVal)
 	input(conVal, inputId)
 
 }
+
+
 
 function toolsListGet (toolElement, typeValue, toolCol, loadTool, typeIndex) {
 	console.log("TOOLSLISTGET");
@@ -198,9 +228,10 @@ function toolsListGet (toolElement, typeValue, toolCol, loadTool, typeIndex) {
 
 function toolsListCreate (toolsList,toolElement) {
 	console.log("TOOLSLISTCREATE");
+	toolsListClear ()
 	// populates toolList
-	// console.log("toolElement: ", toolElement)
-	// console.log(toolsList.length)
+	console.log("toolElement: ", toolElement)
+	console.log(toolsList.length)
 	let toolCount=toolsList.length;
 	// loop through toolsList appending it to Tool dropdown in selected row
 	for(i=0;i<toolCount;i++){
@@ -266,64 +297,20 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 	cell.children[0].selectedIndex=toolIndex
 	console.log(cell.children[0].selectedIndex)
 
-	// need to change selected value of Tool DD
-
-	// ODCell.setAttribute("value", matchTool.OD)
-	// ODCell.children[0].setAttribute("value", matchTool.OD)
-	// console.log(ODCell)
-}
-
-// function toolDataAdd (typeValue) {
-// 	console.log("Tool data addx");
-
-// 	fetch ('http://localhost:3000/toolData?name='+ typeValue)
-// 		//return reponse from DB as JSON
-// 			.then(response => response.json())
-// 			.then(toolsList => {
-// 		  		console.log('Success GET tool list:', toolsList);
-// 				// toolsListCreate (toolsList, toolElement)
-// 			})
-
-// 			.catch((error) => {
-// 		  		console.error('Error:', error);
-// 			});
 	
-
-// }
-
-
-
-
+}
 
 // takes value entered and sets value to cell element
 function input (valuex,idx,keyed) {
-	// alert(keyed)
+	
 //logs value and id of cell that is changed
 	console.log(valuex,idx);	
 	let cellx = document.getElementById(idx).parentElement;
 	console.log(cellx);
-	// console.log(cell.getAttribute("value"));
 	//sets parent of entered value to the value entered
 	cellx.value=valuex
 	// had to add this when loading to display
-	cellx.children[0].value=valuex
-	// console.log(cell);
-	// cell.children[0].textContent=valuex;
-	// cell.value(valuex)
-	// if(keyed) {
-	// 	// alert("keyed")
-	// 	// fetch('http://localhost:3000/index')
-	// 	// .then(response=>response.text())
-	// 	// .then(data=>console.log("worked: ", data))
-	// 	cellx.value='property set'
-	// 	cellx.value=valuex
-	// 	console.log(document.getElementById(idx).parentElement.value)
-	// 	console.log(cellx.property)
-	// 	// cellx.setAttribute("textContent",valuex)
-	// 	// cellx.value
-	// }
-	
-	
+	cellx.children[0].value=valuex	
 }
 
 
@@ -398,9 +385,6 @@ function myDeleteFunction(rowDelButt) {
 		// console.log("row count del func end: ",rowCount);
 	}
 }
-
-
-
 
 
 //WHEN HIT SAVE BUTTON
@@ -844,6 +828,20 @@ function tablesListClear () {
 			// console.log(savesToDel.hasChildNodes);
 		}
 }
+
+function toolsListClear () {
+	//clears saves list
+	 let toolsToDel=document.getElementById("toolDD")
+		while(toolsToDel.hasChildNodes()){
+			toolsToDel.removeChild(toolsToDel.childNodes[0])
+			// console.log(savesToDel.hasChildNodes);
+		}
+}
+
+
+
+
+
 
 function dropTable () {
 	// dont think this is used
