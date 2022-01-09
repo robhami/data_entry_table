@@ -26,7 +26,7 @@ const db  = knex({
   	connection: {
     host : '127.0.0.1',
     user : 'postgres',
-    password : 'Ham&1974',
+    password : 'Elodie2005',
     database : 'bhadata'
   }
 });
@@ -36,8 +36,8 @@ const dbTool =knex({
   	connection: {
     host : '127.0.0.1',
     user : 'postgres',
-    password : 'Ham&1974',
-    database : 'Tooldata'
+    password : 'Elodie2005',
+    database : 'tooldata'
   }
 });
 

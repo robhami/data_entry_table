@@ -94,7 +94,7 @@ function DD (typeIndex, elemUpdate, loadTool) {
 
 
 		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
-	
+		console.log("toolElement: ", toolElement)
 	// get the value of the Type cell to allow correct toolList to be pulled
 		typeValue=document.getElementById(elemUpdate).parentElement.parentElement.children[1].children[0].value
 		
@@ -228,7 +228,7 @@ function toolsListGet (toolElement, typeValue, toolCol, loadTool, typeIndex) {
 
 function toolsListCreate (toolsList,toolElement) {
 	console.log("TOOLSLISTCREATE");
-	toolsListClear ()
+	// toolsListClear ()
 	// populates toolList
 	console.log("toolElement: ", toolElement)
 	console.log(toolsList.length)
@@ -243,8 +243,13 @@ function toolsListCreate (toolsList,toolElement) {
 		// console.log(option)
 		// console.log(toolsList[i])
 		//append option data to toolElement (Tool cell on row selected)
-		toolElement.appendChild(option)
+		toolElement.appendChild(option)	
 	}
+
+	console.log("toolElement.option: ", toolElement.children[0])
+	toolDataExtract(toolsList, toolElement.value, toolElement)
+	// toolDataAdd(toolElement.children[0], toolElement, 0 )
+	//needs to go to tool data extract
 
 }
 
@@ -254,6 +259,8 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 	//match tool Element selected or loaded with value on list 
 	console.log("TOOLDATEXTRACT");
 	console.log("toolVal: ", toolVal)
+	console.log("toolsList: ", toolsList)
+	console.log("toolElement: ", toolElement)
 	// console.log("typeValue: ", typeValue)
 	console.log(toolsList.length)
 	//get length of toolsList
@@ -266,8 +273,10 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 		if(toolsList[i].Tool===toolVal){
 			console.log("MATCH: ", toolsList[i], "i", i)
 			let matchTool = toolsList[i]
+//this jumps 1 because getting rid of text 
 			let toolIndex=i+1;
 			toolDataAdd(matchTool, toolElement, toolIndex)
+
 			break;
 		}
 	}
@@ -276,6 +285,7 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 
 function toolDataAdd (matchTool, toolElement, toolIndex) {
 	//change Tool dropdown shown value to match loaded or selected
+	console.log(toolIndex)
 	console.log("toolDataAdd");
 	// console.log("toolOD: ", matchTool.OD)
 	
@@ -289,6 +299,9 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 		console.log(toolArray[i])
 		cell.setAttribute("value", toolArray[i])
 		cell.children[0].setAttribute("value", toolArray[i])
+		cell.setAttribute("data-value", toolArray[i])
+		cell.children[0].setAttribute("data-value", toolArray[i])
+		console.log(cell.children[0])
 	}
 
 	let cell = toolElement.parentElement.parentElement.children[2]
@@ -296,13 +309,13 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 	cell.children[0].setAttribute("value",matchTool.Tool)
 	cell.children[0].selectedIndex=toolIndex
 	console.log(cell.children[0].selectedIndex)
-
+	console.log(cell.children[0].selectedIndex[1])
 	
 }
 
 // takes value entered and sets value to cell element
 function input (valuex,idx,keyed) {
-	
+	console.log("INPUT")
 //logs value and id of cell that is changed
 	console.log(valuex,idx);	
 	let cellx = document.getElementById(idx).parentElement;
@@ -320,11 +333,12 @@ function addRow() {
 	let toolRow=document.getElementById('dataRow0');
 	let newRow =toolRow.cloneNode(true);
 	clearVals(newRow);
+	console.log("newRow: ", newRow)
 	newRow.id=newRow.id+rowCount;
 	// reset Type value to DC as it is cloning from top row that may have been changed
 	// may need to do this for other values
 	newRow.children[1].setAttribute("value", "DC");
-	// console.log("newRow.children[1].value: ", newRow.children[1])
+	console.log("newRow.children[1].value: ", newRow.children[1])
 	// newRow.setAttribute("value",rowCount);
 	// console.log("newRow: ",newRow);
 	let newRowCols = newRow.children
@@ -354,14 +368,17 @@ function addRow() {
 }
 
 function clearVals (newRow) {
-	console.log("clearVals", newRow)
-	// clears values in new row because cloning previos row in addRow
+	console.log("clearVals", newRow);
+	// clears values in new row because cloning previous row in addRow
 	for(i=3;i<7;i++){
-		// console.log(newRow.children[i]);
-		newRow.children[i].setAttribute("value",0);
-		newRow.children[i].children[0].setAttribute("value",0);
-	}
+		console.log("clear val info: ", newRow.children[i]);
+		newRow.children[i].setAttribute("value","");
+		newRow.children[i].children[0].setAttribute("value","");
+		// newRow.children[i].value=0
+		// newRow.children[i].children[0].value=0
+		console.log("cleared val info: ", newRow.children[i].children[0]);
 
+	}
 	let selectTool=newRow.children[2].children[0]
 	// console.log("selectTool: ", selectTool)
 	let childCount=selectTool.childElementCount
