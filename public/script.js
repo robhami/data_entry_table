@@ -27,7 +27,8 @@ function DD (indexDD, elemUpdate, loadTool) {
 	// text of tool (e.g. DC  10in x 3in  240#), only comes with a load because cant provide indexDD.
 	console.log("loadTool: ", loadTool);
 	
-	// set variable for the DD element being processed
+	// set variable for the DD element being processed 
+	//(e.g. <select id="typeSelect" onchange="DD(this.selectedIndex, this.id)"></select>)
 	let changeDD=document.getElementById(elemUpdate);
 	console.log("changeDD:", changeDD);
 	
@@ -43,7 +44,7 @@ function DD (indexDD, elemUpdate, loadTool) {
 	// FOR ALL SELECTED TOOLS & TYPES and LOADED TYPES ONLY (LOADED TOOLS cannot have indexDD)
 	// CHANGES DD and CELL to DD VALUE
 	if(indexDD!=false) {
-	//set variable for the select option element selected/loading (e.g. DC or DC  10in x 3in  240#)
+	//set variable for the select option element selected/loading (<option value="DC">DC</option>)
 	//*****there may be a better way to do this by using loadTool for both	
 		let selectOption=changeDD.children[indexDD];	
 		console.log("selected option: ",selectOption);	
@@ -74,7 +75,8 @@ function DD (indexDD, elemUpdate, loadTool) {
 	}
 
 
-	//
+	// SENDS TO GET TOOL-LIST IF ITS A TOOL DD, ADDS loadTool & indexDD TO FUNCTION PARAMETERS
+	// ****** toolDD DD and cell value are set in toolDataAdd Function 
 	if (elemUpdate.startsWith("toolDD")){
 	//set toolCol to true, to show that tool column is selected
 		toolCol=true;
@@ -99,6 +101,7 @@ function DD (indexDD, elemUpdate, loadTool) {
 	// loadTool is text that needs loaded & indexDD is index of type that needs to loaded/selected
 		toolsListGet(toolElement, valueDD, toolCol, loadTool, indexDD)
 		// toolDataAdd (valueDD)
+
 	}
 
 	// get units from units DD's
@@ -124,8 +127,10 @@ function DD (indexDD, elemUpdate, loadTool) {
 			convFac(idNumd, unitsDDVal)
 		}
 	}
+
 }
 
+//PULL THE ASSOCIATED TOOL LIST
 function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 	console.log("TOOLSLISTGET");
 //gets Type and Tool data then sends to appropriate function depending if its Type or Tool 
@@ -139,6 +144,7 @@ function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 		.then(toolsList => {
 	// console.log('Success GET tool list:', toolsList); 
 	//if its Type column send toolList (data to add) & toolElement (element to change) to toolsListCreate
+	console.log("HELLO")
 		  	if(!toolCol) {	  		
 				toolsListCreate (toolsList, toolElement)
 		//if its Tool column send toolList (data to use), toolElement (element to change) 
@@ -157,6 +163,65 @@ function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 	  		console.error('Error:', error);
 		});
 }
+
+function toolDataExtract (toolsList, toolVal, toolElement) {
+	//match tool Element selected or loaded with value on list 
+	console.log("TOOLDATEXTRACT");
+	console.log("toolVal: ", toolVal)
+	console.log("toolsList: ", toolsList)
+	console.log("toolElement: ", toolElement)
+	// console.log("valueDD: ", valueDD)
+	console.log(toolsList.length)
+	//get length of toolsList
+	let toolCount=toolsList.length;
+	// console.log(toolsList);
+
+	// loop through toolsList looking for match with toolElement.value (selected or loaded tool)
+	for(i=0;i<toolCount;i++){
+		// console.log(toolsList[i].Tool)
+		if(toolsList[i].Tool===toolVal){
+			console.log("MATCH: ", toolsList[i], "i", i)
+			let matchTool = toolsList[i]
+		//this jumps 1 because getting rid of text 
+			let toolIndex=i+1;
+		
+			toolDataAdd(matchTool, toolElement, toolIndex)
+
+			break;
+		}
+	}
+
+}
+
+function toolDataAdd (matchTool, toolElement, toolIndex) {
+	//add data to number cells & change Tool dropdown shown value to match loaded or selected
+	console.log(toolIndex)
+	console.log("toolDataAdd");
+	// console.log("toolOD: ", matchTool.OD)
+	
+	let toolArray=Object.values(matchTool)
+	console.log("toolArray: ", toolArray)
+	
+	// add numbers to numEnt cells
+	for(i=3;i<7;i++){
+		let cell = toolElement.parentElement.parentElement.children[i]
+		console.log("cell: ", cell)
+		console.log(toolArray[i])
+		cell.value= toolArray[i]
+		cell.children[0].value=toolArray[i]
+		console.log(cell.children[0])
+	}
+
+	let cell = toolElement.parentElement.parentElement.children[2]
+	console.log("toolCell: ", cell)
+	//sets value of tool DD cell & DD select index
+	cell.children[0].setAttribute("value",matchTool.Tool)
+	cell.children[0].selectedIndex=toolIndex
+	console.log(cell.children[0].selectedIndex)
+	console.log(cell.children[0].selectedIndex[1])
+	
+}
+
 
 function convFac(inputId, units) {
 	console.log("convert: ", inputId)
@@ -240,68 +305,9 @@ function toolsListCreate (toolsList,toolElement) {
 
 
 
-function toolDataExtract (toolsList, toolVal, toolElement) {
-	//match tool Element selected or loaded with value on list 
-	console.log("TOOLDATEXTRACT");
-	console.log("toolVal: ", toolVal)
-	console.log("toolsList: ", toolsList)
-	console.log("toolElement: ", toolElement)
-	// console.log("valueDD: ", valueDD)
-	console.log(toolsList.length)
-	//get length of toolsList
-	let toolCount=toolsList.length;
-	// console.log(toolsList);
 
-	// loop through toolsList looking for match with toolElement.value (selected or loaded tool)
-	for(i=0;i<toolCount;i++){
-		// console.log(toolsList[i].Tool)
-		if(toolsList[i].Tool===toolVal){
-			console.log("MATCH: ", toolsList[i], "i", i)
-			let matchTool = toolsList[i]
-		//this jumps 1 because getting rid of text 
-			let toolIndex=i+1;
-			toolDataAdd(matchTool, toolElement, toolIndex)
 
-			break;
-		}
-	}
 
-}
-
-function toolDataAdd (matchTool, toolElement, toolIndex) {
-	//change Tool dropdown shown value to match loaded or selected
-	console.log(toolIndex)
-	console.log("toolDataAdd");
-	// console.log("toolOD: ", matchTool.OD)
-	
-
-	let toolArray=Object.values(matchTool)
-	console.log("toolArray: ", toolArray)
-	
-	for(i=3;i<7;i++){
-		let cell = toolElement.parentElement.parentElement.children[i]
-		console.log(cell)
-		console.log(toolArray[i])
-		// cell.setAttribute("value", toolArray[i])
-		// cell.children[0].setAttribute("value", toolArray[i])
-		cell.value= toolArray[i]
-		cell.children[0].value=toolArray[i]
-
-		// cell.setAttribute("data-value", toolArray[i])
-		// cell.children[0].setAttribute("data-value", toolArray[i])
-		// cell.setAttribute("textContent", toolArray[i])
-		// cell.children[0].setAttribute("textContent", toolArray[i])
-		console.log(cell.children[0])
-	}
-
-	let cell = toolElement.parentElement.parentElement.children[2]
-	console.log("toolCell: ", cell)
-	cell.children[0].setAttribute("value",matchTool.Tool)
-	cell.children[0].selectedIndex=toolIndex
-	console.log(cell.children[0].selectedIndex)
-	console.log(cell.children[0].selectedIndex[1])
-	
-}
 
 // takes value entered and sets value to cell element
 function input (valuex,idx,keyed) {
@@ -615,7 +621,7 @@ function putData (saveArray) {
 
 
 async function myLoadFunction () {
-	//sends value in input box and identifies that its not save action
+	//sends value in input box to server via sendSaveName function and identifies that its not save action
 	await sendSaveName (false)
 	// console.log("loading: ", saveName.name);
 	// do a GET request to get data from DB. GET request is managed by server.js
