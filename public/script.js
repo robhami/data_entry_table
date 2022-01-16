@@ -4,6 +4,7 @@ let saveObject={};
 let saveArray=[];
 let loadData={};
 let indexDD="";
+let selectText=1
 
 //populates the saved games dropdown
 tablesListGet ()
@@ -19,7 +20,7 @@ tablesListGet ()
 
 function DD (indexDD, elemUpdate, loadTool) {
 	// sets the value to selected or loaded DD values
-		
+	
 	// selected index  (e.g. for typeSelect: 1=DC, 2=HWDP or for toolDD: 1=DC  10in x 3in  240#)
 	console.log("indexDD: ", indexDD);
 	// id of DD select element to be processed (is it typeSelect or toolDD ? and which number e.g typeSelect1 is 2nd row)
@@ -69,6 +70,13 @@ function DD (indexDD, elemUpdate, loadTool) {
 	// variable that identifies cell of Tool Column needs to be populated
 		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
 		console.log("toolElement", toolElement)
+		console.log("toolElement children", toolElement.children.length)
+
+		if (toolElement.children.length>1) {
+			selectText=0
+			toolsListClear(toolElement)
+		}
+
 	//send toolElement ( tool cell to change), tool value (value selected in Type cell), 
 	// and toolCol (whether its Type or Tool cell that is selected), in this case this is false
 		toolsListGet(toolElement, valueDD, toolCol)
@@ -136,6 +144,7 @@ function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 //gets Type and Tool data then sends to appropriate function depending if its Type or Tool 
 	console.log("toolCol: ", toolCol)
 	console.log("valueDD: ",valueDD)
+
 	// console.log("loading tablesList");
 	// do a GET request to get toolList data from DB using valueDD (e.g. DC). GET request is managed by server.js	
 	fetch ('http://localhost:3000/toolType?name='+ valueDD)
@@ -145,7 +154,9 @@ function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 	// console.log('Success GET tool list:', toolsList); 
 	//if its Type column send toolList (data to add) & toolElement (element to change) to toolsListCreate
 	console.log("HELLO")
-		  	if(!toolCol) {	  		
+
+		  	if(!toolCol) {	  	
+		  		console.log("!toolCol")	
 				toolsListCreate (toolsList, toolElement)
 		//if its Tool column send toolList (data to use), toolElement (element to change) 
 		// loadTool (text of tool (e.g. DC  10in x 3in  240#)) or toolElement.value (DC) **** this looks wrong**** to toolDataExtract
@@ -162,6 +173,51 @@ function toolsListGet (toolElement, valueDD, toolCol, loadTool, indexDD) {
 		.catch((error) => {
 	  		console.error('Error:', error);
 		});
+
+}
+
+function toolsListCreate (toolsList,toolElement) {
+	console.log("TOOLSLISTCREATE");
+	// toolsListClear ()
+	// populates toolList
+	console.log("toolElement.id: ", toolElement.id)
+	console.log(toolsList.length)
+	debugger
+	
+	let toolCount=toolsList.length;
+	// loop through toolsList appending it to Tool dropdown in selected row
+	for(i=0;i<toolCount;i++){
+		// create option element
+		let option =document.createElement("option")
+		//set option element text and value as per tool name
+		option.text=toolsList[i].Tool;
+		option.value=toolsList[i].Tool;
+		// console.log(option)
+		// console.log(toolsList[i])
+		//append option data to toolElement (Tool cell on row selected)
+		toolElement.appendChild(option)	
+	}
+
+	console.log("toolElement.option: ", toolElement.children[0])
+	toolDataExtract(toolsList, toolElement.value, toolElement)
+	// toolDataAdd(toolElement.children[0], toolElement, 0 )
+	//needs to go to tool data extract
+
+}
+
+function toolsListClear (toolElement) {
+	//clears saves list
+	console.log("toolsListClear with:", toolElement.id)
+	
+	//only seems to do top row
+	 let toolsToDel=document.getElementById(toolElement.id)
+
+		while(toolsToDel.children.length>0){
+			toolsToDel.removeChild(toolsToDel.childNodes[0])
+			console.log(toolsToDel.children.length);
+
+		}
+		
 }
 
 function toolDataExtract (toolsList, toolVal, toolElement) {
@@ -181,9 +237,10 @@ function toolDataExtract (toolsList, toolVal, toolElement) {
 		// console.log(toolsList[i].Tool)
 		if(toolsList[i].Tool===toolVal){
 			console.log("MATCH: ", toolsList[i], "i", i)
+
 			let matchTool = toolsList[i]
-		//this jumps 1 because getting rid of text 
-			let toolIndex=i+1;
+		//this jumps 1 because getting rid of "Select Tool" text 
+			let toolIndex=i+selectText;
 		
 			toolDataAdd(matchTool, toolElement, toolIndex)
 
@@ -215,6 +272,8 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 	let cell = toolElement.parentElement.parentElement.children[2]
 	console.log("toolCell: ", cell)
 	//sets value of tool DD cell & DD select index
+	console.log("matchTool.Tool: ",matchTool.Tool)
+	
 	cell.children[0].setAttribute("value",matchTool.Tool)
 	cell.children[0].selectedIndex=toolIndex
 	console.log(cell.children[0].selectedIndex)
@@ -273,41 +332,6 @@ function doConv (inputId, units, fac) {
 	input(conVal, inputId)
 
 }
-
-
-
-function toolsListCreate (toolsList,toolElement) {
-	console.log("TOOLSLISTCREATE");
-	// toolsListClear ()
-	// populates toolList
-	console.log("toolElement: ", toolElement)
-	console.log(toolsList.length)
-	let toolCount=toolsList.length;
-	// loop through toolsList appending it to Tool dropdown in selected row
-	for(i=0;i<toolCount;i++){
-		// create option element
-		let option =document.createElement("option")
-		//set option element text and value as per tool name
-		option.text=toolsList[i].Tool;
-		option.value=toolsList[i].Tool;
-		// console.log(option)
-		// console.log(toolsList[i])
-		//append option data to toolElement (Tool cell on row selected)
-		toolElement.appendChild(option)	
-	}
-
-	console.log("toolElement.option: ", toolElement.children[0])
-	toolDataExtract(toolsList, toolElement.value, toolElement)
-	// toolDataAdd(toolElement.children[0], toolElement, 0 )
-	//needs to go to tool data extract
-
-}
-
-
-
-
-
-
 
 // takes value entered and sets value to cell element
 function input (valuex,idx,keyed) {
@@ -690,6 +714,7 @@ function returnData (json) {
 
 function loadDD (loadData,loadRows) {
 	console.log(loadRows)
+	// selectText=0
 	// loops through added rows & loadData for tool & type columns
 	// then sends to DD function to set loaded values
 	for(k=0;k<loadRows;k++) {
@@ -843,14 +868,7 @@ function tablesListClear () {
 		}
 }
 
-function toolsListClear () {
-	//clears saves list
-	 let toolsToDel=document.getElementById("toolDD")
-		while(toolsToDel.hasChildNodes()){
-			toolsToDel.removeChild(toolsToDel.childNodes[0])
-			// console.log(savesToDel.hasChildNodes);
-		}
-}
+
 
 
 
