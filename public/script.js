@@ -71,8 +71,9 @@ function DD (indexDD, elemUpdate, loadTool) {
 		let toolElement=document.getElementById(elemUpdate).parentElement.parentElement.children[2].children[0]
 		console.log("toolElement", toolElement)
 		console.log("toolElement children", toolElement.children.length)
-
+	// if toolElement has children need to clear them as it indicates exiting list
 		if (toolElement.children.length>1) {
+			//added this in so toolDataExtract doesn't jump 1 anymore as selectText no longer in toolList once its added once
 			selectText=0
 			toolsListClear(toolElement)
 		}
@@ -182,7 +183,7 @@ function toolsListCreate (toolsList,toolElement) {
 	// populates toolList
 	console.log("toolElement.id: ", toolElement.id)
 	console.log(toolsList.length)
-	debugger
+	
 	
 	let toolCount=toolsList.length;
 	// loop through toolsList appending it to Tool dropdown in selected row
@@ -264,9 +265,15 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 		let cell = toolElement.parentElement.parentElement.children[i]
 		console.log("cell: ", cell)
 		console.log(toolArray[i])
+		//changed to defaultValue to get input value in html to update
+		// still issue getting td to update 
+		cell.setAttribute("value", toolArray[i])
 		cell.value= toolArray[i]
-		cell.children[0].value=toolArray[i]
+		cell.children[0].defaultValue=toolArray[i]
+		console.log("cell parent: ", cell.parentElement)
+		///td class 
 		console.log(cell.children[0])
+		console.log("cell: ", cell)
 	}
 
 	let cell = toolElement.parentElement.parentElement.children[2]
