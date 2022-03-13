@@ -265,6 +265,7 @@ function toolDataAdd (matchTool, toolElement, toolIndex) {
 		console.log("cell: ", cell)
 		console.log(toolArray[i])
 		cell.value= toolArray[i]
+		cell.setAttribute("value", toolArray[i])
 		cell.children[0].value=toolArray[i]
 		console.log(cell.children[0])
 	}
